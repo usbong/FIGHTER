@@ -3,6 +3,10 @@ Reusable computer instructions<br/>
 <br/>
 <b>Objective:</b> increase know-how in ARMOR defense techniques
 
+## Key Notes
+1) TIME + 勢い (いきおい; ikioi; impulse) : LABANAN<br/>
+2) TIME + 自然 (しぜん; shizen; kalikasan) : BAHAY
+
 ## 0. Recommended References
 0.1 [Usbong Pagong: SDL and OpenGL](https://github.com/usbong/pagong/)
 

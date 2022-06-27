@@ -7,6 +7,10 @@ Reusable computer instructions<br/>
 1) TIME + 勢い (いきおい; ikioi; impulse) : LABANAN<br/>
 2) TIME + 自然 (しぜん; shizen; kalikasan) : BAHAY
 
+## Example 
+
+<img src="https://github.com/usbong/FIGHTER/blob/main/notes/animation/usbongFighterPilotAndRobotAnimationV3ARMSAndLEGSNoteBounce3FramesV20220627T1607.gif" width="20%">
+
 ## 0. Recommended References
 0.1 [Usbong Pagong: SDL and OpenGL](https://github.com/usbong/pagong/)
 

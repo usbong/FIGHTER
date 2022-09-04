@@ -14,6 +14,12 @@ Reusable computer instructions<br/>
 ## 0. Recommended References
 0.1 [Usbong Pagong: SDL and OpenGL](https://github.com/usbong/pagong/)
 
+0.2 [A Talk Between the Creators of Street Fighter and Fatal Fury! (Featuring Takashi Nishiyama of Dimps)](https://www.youtube.com/watch?v=GMp5x7-FAiU); last accessed: 20220905; from 20211018<br/>
+--> Dec 5, 2020
+
+0.3 [【インタビュー】船水紀孝 x 西山隆志 ストリートファイター誕生秘話](https://www.youtube.com/watch?v=FsHKQQGsrLI); last accessed: 20220905; from 20220904<br/>
+--> Aug 8, 2020
+
 ## 1. Application Execution
 TO-DO: -update: this
 

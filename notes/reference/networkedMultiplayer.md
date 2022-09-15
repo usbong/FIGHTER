@@ -20,7 +20,7 @@
  
 >  When GGPO receives the remote inputs from the network, it compares the predicted inputs to the actual ones. If it finds a discrepancy, it rewinds the simulation back to the first incorrect frame, repredicts the inputs for each player based on the updated input stream, and advances the simulation to the current frame using the new prediction.
   
-### notes: PRE-LOADS NEXT ACTION,   
+### notes: PRE-LOADS NEXT ACTION
 
 ### reminder: select 3D object files in megabytes
   

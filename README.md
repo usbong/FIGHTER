@@ -11,6 +11,30 @@ Reusable computer instructions<br/>
 
 <img src="https://github.com/usbong/FIGHTER/blob/main/notes/animation/usbongFighterPilotAndRobotAnimationV3ARMSAndLEGSNoteBounce3FramesV20220627T1607.gif" width="20%">
 
+## Additional Notes:
+
+<b>1) REASON bought SKULL GIRLS 2nd Encore (PC; SteamPowered)</b><br/>
+<br/>
+<b>1.1) PRICE (DISCOUNTED)</b> <br/>
+--> notes: currently @54.99PHP (2022-12-28T15:18);<br/>
+<br/>
+<b>1.2) eSPORTS TOURNAMENT</b><br/>
+--> exists: with PLAYERS who play GAME<br/>
+--> read: eSPORTS PLAYER, JWONGGG (WONG, JUSTIN), assisted with GAME<br/>
+<br/>
+<b>1.3) DRAWING with ANIMATION TECHNIQUE</b><br/>
+--> observed: to be as that of SCOTT PILGRIM MANGA/COMICS;<br/>
+--> notes: however, of noticeable animation with FEMALE chest part to cause WARNING of its GAMEPLAY;<br/>
+--> adds: 1.2) eSPORTS with 1.1) PRICE (DISCOUNTED) to be > than 1.3)<br/>
+<br/>
+<b>1.4) MUSIC TECHNIQUE</b><br/>
+--> observed: via sample GAMEPLAY VIDEO<br/>
+<br/>
+<b>2) learns: via select MEDIA of ERROR between MALE & FEMALE @DEVELOPMENT COMPANY;</b><br/>
+--> notes: HISTORY as OUTPUT,<br/>
+--> where: select members left to be @another DEVELOPMENT COMPANY;<br/>
+--> examples: MIKEZ; AHAD, ALEX; KINUCAKES
+
 ## 0. Recommended References
 0.1 [Usbong Pagong: SDL and OpenGL](https://github.com/usbong/pagong/)
 

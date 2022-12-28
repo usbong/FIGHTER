@@ -29,6 +29,7 @@ Reusable computer instructions<br/>
 <br/>
 <b>1.4) MUSIC TECHNIQUE</b><br/>
 --> observed: via sample GAMEPLAY VIDEO<br/>
+--> added: SOUNDTRACK due to read of MS. YAMANE, MICHIRU (Castlevania Symphony of the Night, et cetera)<br/>
 <br/>
 <b>2) learns: via select MEDIA of ERROR between MALE & FEMALE @DEVELOPMENT COMPANY;</b><br/>
 --> notes: HISTORY as OUTPUT,<br/>

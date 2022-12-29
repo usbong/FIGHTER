@@ -31,6 +31,12 @@ Reusable computer instructions<br/>
 --> observed: via sample GAMEPLAY VIDEO<br/>
 --> added: SOUNDTRACK due to read of MS. YAMANE, MICHIRU (Castlevania Symphony of the Night, et cetera)<br/>
 <br/>
+<b>1.5) APPLICABLE OPERATING SYSTEM</b><br/>
+--> observed: to be executable on Windows, macOS, and Linux;<br/>
+--> observed: select FIGHTING GAMES, e.g. Street Fighter 5, Tekken 7, were also @DISCOUNTED PRICES;<br/>
+--> opted: for the GAME due to currently have no available Windows machine to execute application<br/>
+<br/>
+
 <b>2) learns: via select MEDIA of ERROR between MALE & FEMALE @DEVELOPMENT COMPANY;</b><br/>
 --> notes: HISTORY as OUTPUT,<br/>
 --> where: select members left to be @another DEVELOPMENT COMPANY;<br/>

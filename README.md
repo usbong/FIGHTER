@@ -4,10 +4,21 @@ Reusable computer instructions<br/>
 <b>Objective:</b> increase know-how in ARMOR defense techniques
 
 ## Key Notes
-1) TIME + 勢い (いきおい; ikioi; impulse) : LABANAN<br/>
-2) TIME + 自然 (しぜん; shizen; kalikasan) : BAHAY
+1) TIME + 勢い : LABANAN<br/>
+2) TIME + 自然 : BAHAY
 
-## Example 
+### CORE
+
+exists: as with REAL FIGHTING,<br/>
+--> where: based on 勢い（勇ましい）of FIGHTERS in set system 
+
+#### Example
+
+As with SPORTS, athlete has `imagined strength` that he can beat opponent;<br/>
+--> `imagined strength` is TRANSFORMED into <b>REAL STRENGTH</b>,<br/>
+--> due to: opponent appears ill-prepared, et cetera;
+ 
+## Quick Example of ANIMATION  
 
 <img src="https://github.com/usbong/FIGHTER/blob/main/notes/animation/usbongFighterPilotAndRobotAnimationV3ARMSAndLEGSNoteBounce3FramesV20220627T1607.gif" width="20%">
 
@@ -51,6 +62,9 @@ Reusable computer instructions<br/>
 0.3 [【インタビュー】船水紀孝 x 西山隆志 ストリートファイター誕生秘話](https://www.youtube.com/watch?v=FsHKQQGsrLI); last accessed: 20220905; from 20220904<br/>
 --> Aug 8, 2020
 
+0.4 [USBONG Lessons-learned from JWONG](https://github.com/usbong/newsletters/blob/main/notes/LessonsLearned/JWONG.md)<br/>
+--> Quick Link to [JWONG TWITTER](https://twitter.com/JWonggg)
+
 ## 1. Application Execution
 TO-DO: -update: this
 
@@ -78,7 +92,7 @@ answer by: A-Sharabiani, 20170719T1535<br/>
 edited by: Amir, 20180425T1940<br/>
 
 ## 3. Open Source Software License
-Copyright 2022 SYSON, MICHAEL B.
+Copyright 2022~2023 SYSON, MICHAEL B.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

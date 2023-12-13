@@ -19,3 +19,18 @@ technique;
 opts for no shoryuken (shouryuuken) movements;
 no jump; mecha;
 pilot; flies;
+
+## --
+
+Robert (CPU); Dragonball fireball super fast; <br/>
+remembers a Dragonball Arcade fighting game
+
+## Present Team
+
+Joe (HIGASHI); strong; copy character HWA noticeably weaker;<br/>
+Kim,<br/>
+Terry
+
+basic attacks; no combos (yet, or at all?)
+
+

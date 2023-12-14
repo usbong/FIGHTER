@@ -4,4 +4,10 @@
 
 > Game Boy Advance Longplay [014] Metal Slug Advance (US) 
 
+## --
+
 In earlier parts of video, bi-pedal robot slug can transform into tank mode 
+
+## https://youtu.be/6MMN5dBG2lY?si=RbOGuyVsiG3oS1Go&t=4680
+
+> Game Boy Advance Longplay [014] Metal Slug Advance (US) 

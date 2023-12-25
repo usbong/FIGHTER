@@ -1,0 +1,6334 @@
+<!--
+/*
+' Copyright 2022~2023 USBONG
+'
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You ' may obtain a copy of the License at
+'
+' http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, ' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing ' permissions and limitations under the License.
+'
+' @company: USBONG
+' @author: SYSON, MICHAEL B.
+' @date created: 20221214
+' @date updated: 20231130; from 20231129
+' @website: www.usbong.ph
+'
+'
+' Notes:
+' 1) website address: http://localhost/usbong_2DAnimationTool/html_application/usbongMotionTweenTool.html;
+' last accessed: 20230410
+'
+' References:
+' 1) https://phantomjs.org/; last accessed: 20200724
+' downloaded phantomjs zipped file's examples: netsniff.js; last accessed: 20200725
+'
+' 2) https://nodejs.org/en/download/; last accessed: 20221214
+' execute: .js file via: node halimbawa.js
+' https://askubuntu.com/questions/1297994/what-is-the-simplest-way-to-run-javascript-code-on-ubuntu; last accessed: 20221214
+'
+' 3) http://localhost/usbong_2DAnimationTool/html_application/usbong2DAnimationTool.html;
+' last accessed: 20230311
+'
+' 4) https://stackoverflow.com/questions/5027950/coordinates-for-my-javascript-game-based-on-an-angle-when-do-i-use-sin-cos-an;
+' last accessed: 20230426
+' answer by: Jimmy, 20110217T1212; from 20110217T1106
+'
+' 5) https://www.mathsisfun.com/sine-cosine-tangent.html;
+' last accessed: 20230426
+'
+'*/
+//added by Mike, 20230313
+//TO-DO: -add: adjustable "STAGE" SIZE textbox
+//TO-DO: -add: timeline?; remembers: DIRECTOR6, FLASH tool
+//TO-DO: -note: location of image sprite file in assets folder, editable using GIMP tool
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+<!-- TO-DO: -update: this -->
+<!-- //edited by Mike, 20230314 //TO-DO: -add: option to set IF from internet
+-->
+
+<!--
+  	<base href="http://localhost/usbong_2DAnimationTool/" target="_blank">
+  	<base href="http://store.usbong.ph/" target="_blank">
+-->
+
+  </head>
+
+  <title>
+    Usbong Game Off 2023
+  </title>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+  <style type="text/css">
+		html, body
+        {
+            font-family: Arial;
+			font-size: 11pt;
+
+			/* edited by Mike, 20220911
+			width: 640px;
+			*/
+			width: 100%; /*90%; 80%;*/
+			height: 100%;
+
+			/*added by Mike, 20231119*/
+			background-color: white; /*black; transparent*/
+			border: none;
+
+
+			padding: 0;
+			margin: 0;
+
+			/* //added by Mike, 20221002
+			//reference: https://www.w3schools.com/howto/howto_css_disable_text_selection.asp;
+			//last accessed: 20221002
+			*/
+
+			-webkit-user-select: none; /* Safari */
+			-ms-user-select: none; /* IE 10 and IE 11 */
+			user-select: none; /* Standard syntax */
+
+			/* added by Mike, 20221012 */
+			transform: scale(1.0);
+
+			/* added by Mike, 20221119 */
+			touch-action: none;
+		}
+
+		canvas.myCanvas {
+      position: absolute;
+
+			padding: 0;
+			margin: auto;
+			display: block;
+
+/*
+			width: 320px;
+			height: 288px;
+*/
+
+/*			width: 448px; *//*640px;*/
+/*			height: 402px; *//*576px;*/
+
+			width: 640px;
+			height: 360px;
+
+			/*	//removed by Mike, 20231121
+				border: 1px solid gray;
+			*/
+
+/*
+			padding: -10px;
+*/
+      visibility: hidden;
+
+			border: 1px dotted gray;
+
+			z-index: -1;
+		}
+		
+		canvas.myCanvasSnowEffect {
+			position: absolute;
+
+			padding: 0;
+			margin: auto;
+			display: block;
+
+
+			width: 640px;
+			height: 360px;
+
+			visibility: hidden;
+
+			border: 1px dotted gray;
+
+			z-index: 10;
+		}
+		
+		div.myDivSnowEffect
+		 {
+			position: absolute;
+
+			background-color: white; /*pink;*/
+			
+			padding: 0;
+			margin: auto;
+			display: block;
+
+
+			width: 5px; /*10px;*/
+			height: 5px; /*10px;*/
+
+
+			visibility: visible;
+/*
+
+			border: 1px dotted gray;
+*/
+			z-index: 20;
+		}
+
+		div.myDivTransitionEffect
+		{
+			position: absolute;
+
+			background-color: black; /*pink;*/
+			
+			padding: 0;
+			margin: auto;
+			display: block;
+
+
+			width: 360px;
+			height: 360px;
+
+
+			visibility: visible; /*hidden;*/
+			z-index: 99;
+			
+			transform: scale(0, 0);
+		}
+		
+
+		.ImageTileFrame1 {
+			position: absolute;
+
+      /*added by Mike, 20231105*/
+  		clip: rect(0px,64px,64px,0px);
+
+			visibility: hidden;
+			
+			z-index: 2;
+		}
+
+    .ImageMonsterBoss {
+			position: absolute;
+
+      clip: rect(0px,128px,128px,0px);
+
+      width:512px;
+      height: auto;
+
+			visibility: hidden;
+			
+			z-index: 2;
+		}
+
+    .ImageMonster0 {
+      position: absolute;
+
+      clip: rect(0px,64px,64px,0px);
+
+      visibility: hidden;
+    }
+	
+	 .ImageMainSoldier {
+			position: absolute;
+/*
+			width: 768px;
+			height: 256px;
+			
+			object-fit: contain;
+
+			clip: rect(0px,64px,64px,0px);
+*/
+			visibility: hidden;
+			
+			z-index: 2;
+		}
+
+	 .ImageBossBattleBgPart2 {
+			position: absolute;
+			visibility: hidden;
+			
+			z-index: 2;
+		}
+		
+
+		.ImageMouseInput {
+			position: absolute;
+
+			clip: rect(0px,64px,64px,0px);
+
+			visibility: hidden; /*visible;*/
+		}
+
+
+		.ImageExplosion {
+			position: absolute;
+
+			/*	//edited by Mike, 20231120
+				clip: rect(0px,256px,256px,0px);
+			*/
+
+			clip: rect(0px,128px,128px,0px);
+
+			visibility: hidden;
+
+			z-index: 10; /*4;*/
+		}
+		
+		
+		.ImageExplosionToCity {
+			position: absolute;
+
+			clip: rect(0px,128px,128px,0px);
+/*
+			width: 64px; 
+			height: auto;
+*/
+			object-fit: contain;
+			
+			visibility: hidden;
+/*			
+			scale: 0.5;
+*/
+			z-index: 10; /*4;*/
+		}
+
+		.ImageHowToPlayGuide {
+			position: absolute;
+
+			text-align: center;
+			line-height: 32px;
+
+			visibility: hidden;
+
+			width: 640px;
+			height: 360px;
+
+			/* //added by Mike, 20221104 */
+			z-index: 10;
+		}
+
+		.ImageTitle {
+			position: absolute;
+
+			text-align: center;
+			line-height: 32px;
+
+			visibility: hidden;
+
+			/* //edited by Mike, 20230121
+			//notes: @640px, excess shaking via MS EDGE Browser
+			*/
+			width: 480px; /*640px;*/
+
+			object-fit: contain;
+
+			z-index: 10;
+		}
+
+		.ImageBossBattleBg {
+			position: absolute;
+
+			text-align: center;
+			line-height: 32px;
+
+			visibility: hidden;
+
+			width: 600px;
+			height: auto;
+
+			object-fit: contain;
+			
+			z-index: 1;
+		}
+
+		
+		.ButtonSet, .TextInputSet {
+			position: relative; /*absolute;*/
+			font-size: 20px;
+		}
+
+		.LabelSet {
+			position: relative; /*absolute;*/
+			font-size: 24px;
+
+			font-weight: bolder; /*bold;*/
+		}
+
+		.SelectAnimDirection {
+			font-size: 22px;
+		}
+
+		table.TableSetPanel
+		{
+			position: absolute;
+			border: 2px dotted #ab9c7d;
+			margin-top: 0px; /*10px*/
+
+			visibility: hidden;
+		}
+
+
+		.Image32x32Tile {
+			position: absolute;
+/*
+			width: 256px;
+			height: 256px;
+
+			object-fit: contain;
+
+			clip: rect(0px,64px,64px,0px);
+*/
+/*	//edited by Mike, 20231116
+			width: 512px;
+*/
+			width: 768px;
+			height: 256px;
+
+			object-fit: contain;
+
+			clip: rect(0px,64px,64px,0px);
+
+			background-color: #f7f7f7; /*transparent;*/
+/*
+			border: none;
+*/
+			color: #222222;
+
+			/* //removed by Mike, 20221111
+			opacity: 0.5;*/
+
+			font-weight: bold;
+			/*font-size: 146%;*/ /*20px;*/
+/*
+			text-align: center;
+			line-height: 32px;
+*/
+
+			border: 1px dotted gray;
+
+			visibility: hidden;
+
+			margin: 0px; /*1px;*/
+			padding: 0px;
+			z-index: 3;
+		}
+
+
+    		/* noted by Mike, 20221105 */
+    		.Image32x32TileTarget {
+    			position: absolute;
+
+    /* //added by Mike, 20221113; edited by Mike, 20230111*/
+    /*
+    			width: 128px;
+    			height: 128px;
+    */
+    			width: 256px;
+    			height: 256px;
+
+    			object-fit: contain;
+
+
+    			/* //added by Mike, 20221112; edited by Mike, 20230111 */
+    /*
+    			clip: rect(0px,32px,32px,0px);
+    */
+    			clip: rect(0px,64px,64px,0px);
+
+    /* //removed by Mike, 20221112
+    			width: 32px;
+    			height: 32px;
+    */
+
+    /* //edited by Mike, 20221112 */
+    /*
+    			background-color: #ffffff;
+    */
+    background-color: transparent;
+    border: none;
+    			color: #222222;
+
+    			/* //added by Mike, 20221111
+    			   //TO-DO: -update: this
+    			*/
+    			opacity: 0.5;
+
+    			font-weight: bold;
+    			font-size: 146%; /*18px;*/
+
+    			text-align: center;
+    			line-height: 32px;
+
+    			/*padding-top: 0.1875%;*/ /*6px;*/
+
+    /* //note: with clip rect border is put on entire sprite image */
+    /* //removed by Mike, 20221112
+    			border: 3px solid #ff0000;
+    			border-radius: 3px;
+    */
+    			margin: 0px; /*1px;*/
+    			padding: 0px;
+    			z-index: 4;
+    		}
+
+    		.Image32x32TileTargetBorder {
+    			position: absolute;
+    /*
+    edited by Mike, 20230111
+    			width: 27px;
+    			height: 27px;
+    */
+    			width: 58px;
+    			height: 58px;
+
+    			background-color: transparent;
+    			color: #222222;
+
+    			font-weight: bold;
+    			font-size: 146%; /*18px;*/
+
+    			text-align: center;
+    			line-height: 32px;
+
+    			border: 3px dashed #ff0000;
+    			border-radius: 3px;
+
+    			visibility: hidden;
+
+    			margin: 0px;
+    			padding: 0px;
+    			z-index: 4;
+    		}
+
+    		.Image32x32TileSpaceBorder {
+    			position: absolute;
+
+    /*
+    edited by Mike, 20230111
+    			width: 27px;
+    			height: 27px;
+    */
+    			width: 58px;
+    			height: 58px;
+
+    			background-color: transparent; /*#ffffff;*/
+
+    			color: #222222;
+
+    			font-weight: bold;
+    			font-size: 146%; /*18px;*/
+
+    			text-align: center;
+    			line-height: 32px;
+
+    			border: 3px dashed #00ff00; /*#ffffff*/
+    			border-radius: 3px;
+
+    			visibility: hidden;
+
+    			margin: 0px;
+    			padding: 0px;
+    			z-index: 4;
+    		}
+
+
+    		.Image32x32TileSpaceTarget {
+    			position: absolute;
+
+    /*
+    edited by Mike, 20230111
+    			width: 27px;
+    			height: 27px;
+    */
+    			width: 58px;
+    			height: 58px;
+
+    			background-color: #000000; /*#ffffff;*/
+    			color: #222222;
+
+    			text-align: center;
+    			line-height: 32px;
+
+    			border: 3px solid #ffffff; /*#ff0000;*/
+    			border-radius: 3px;
+
+    			margin: 0px;
+    			padding: 0px;
+    			z-index: 5;
+    		}
+
+    		/* added by Mike, 20221105 */
+    		.Image32x32TileSpace {
+    			position: absolute;
+
+    /* //added by Mike, 20221113; edited by Mike, 20230111*/
+    /*
+    			width: 128px;
+    			height: 128px;
+    */
+    			width: 256px;
+    			height: 256px;
+    			object-fit: contain;
+
+    			/* //added by Mike, 20221112; edited by Mike, 20230111 */
+    /*
+    			clip: rect(0px,32px,32px,0px);
+    */
+    			clip: rect(0px,64px,64px,0px);
+
+
+    /* //removed by Mike, 20221112
+    			width: 32px;
+    			height: 32px;
+    */
+
+    /* //edited by Mike, 20221112 */
+    /*
+    			background-color: #222222;
+    */
+    background-color: transparent;
+    border: none;
+    			color: #222222;
+
+    			text-align: center;
+    			line-height: 32px;
+
+    			/*padding-top: 0.1875%;*/ /*6px;*/
+
+    /* //note: with clip rect border is put on entire sprite image */
+    /* //removed by Mike, 20221112
+    			border: 3px solid #ff0000;
+    			border-radius: 3px;
+    */
+    			margin: 0px; /*1px;*/
+    			padding: 0px;
+
+    			z-index: 3;
+    		}
+
+
+			/*added by Mike, 20231111 */
+			div.DivTextStatus
+			{
+				position: absolute;
+
+/*	//edited by Mike, 20221213
+				background-color: #000000aa;
+*/
+/*
+				background-color: #00000099;
+				
+*/
+				background-color: transparent;
+
+				color: #eeeeee; /*#ffffff;*/ /*#ffbd00;*/ /* gold */
+
+				/*
+				border: 3px solid #ffffff;				
+				border-radius: 4px;
+*/
+
+				/*opacity: 50%;*/
+
+				font-size: 30px; /*16px;*/
+				font-weight: bold;
+
+/* //edited by Mike, 20230130
+				margin: 10px;
+*/
+				padding: 10px;
+
+				visibility: hidden;
+
+				/* added by Mike, 20230128;
+					put above tile images */
+				z-index: 90; /*4;*/
+			}
+
+			div.DivTextStatusBackground
+			{
+				position: absolute;
+
+				background-color: #00000099;
+				border: 3px solid #ffffff;				
+				border-radius: 4px;
+
+				font-size: 30px; /*16px;*/
+				font-weight: bold;
+
+				padding: 10px;
+				
+				width: 120px; 
+				height: 120px; 
+
+				visibility: hidden;
+
+				/* added by Mike, 20230128;
+					put above tile images */
+				z-index: 80; /*4;*/
+			}
+
+			
+			div.DivStepCountStatusShadow
+			{
+				position: absolute;
+/*
+				background-color: #000000aa;
+*/
+				/*color: #ffffff;*/ /* white */
+
+				color: #6d4e22; /* brown */
+
+				/*opacity: 50%;*/
+
+				font-size: 32px;/*42px;*/
+				font-weight: bold;
+
+/* //edited by Mike, 20230130
+				padding: 10px;
+*/
+				/* //changed from margin */
+				/* //edited by Mike, 20230130
+				margin: 10px;
+				*/
+				padding: 0px;
+
+
+				visibility: hidden;
+
+				/* put above image tiles;
+					below step count button
+				*/
+				z-index: 90; /*4;*/
+			}
+
+
+
+			div.DivTextEnter
+			{
+				position: absolute;
+				/*background-color: #000000aa;*/
+				color: #000000; /*#ffffff;*/
+
+				/*opacity: 50%;*/
+
+				font-size: 16px;
+				font-weight: bold;
+
+				/* //noted by Mike, 20230130 */
+				padding: 10px;
+
+				visibility: visible;
+			}
+
+			div.DivTextClickStart
+			{
+				position: absolute;
+				background-color: #4d4d4d;
+				color: #ffffff; /*#ffffff;*/
+
+				/*opacity: 50%;*/
+
+				font-size: 16px;
+				font-weight: bold;
+
+				/* //noted by Mike, 20230130 */
+				padding: 10px;
+				padding-right: 40px;
+				padding-left: 40px;
+
+    			border: 3px solid #4d4d4d;
+    			border-radius: 3px;
+
+				visibility: hidden;
+			}
+
+			div.DivTextScore
+			{
+				position: absolute;
+/*
+				background-color: #000000aa;
+*/
+				color: #6d4e22; /* brown */
+
+				/*color: #ffffff;*/ /* white */
+
+				/*opacity: 50%;*/
+
+				font-size: 32px;/*42px;*/
+				font-weight: bold;
+
+/* //edited by Mike, 20230130
+				padding: 10px;
+*/
+				/* //changed from margin */
+				/* //edited by Mike, 20230130
+				margin: 10px;
+				*/
+				padding: 0px;
+
+				visibility: hidden;
+
+				/* put above image tiles;
+					below step count button
+				*/
+				z-index: 90; /*4;*/
+			}
+
+
+
+
+      audio.myAudio
+      {
+        width: 416px;
+        height: 312px;
+
+        /* added by Mike, 20230115 */
+        visibility: hidden;
+      }
+
+
+  </style>
+
+  <script>
+
+
+//added by Mike, 20221105
+bIsTargetAtSpace = true;
+
+iTargetAtSpaceBlinkAnimationCount=0;
+iTargetAtSpaceBlinkAnimationCountMax=6;
+
+//added by Mike, 20221106
+iTargetTileBgCount=-1;
+
+//added by Mike, 20221106
+//note: 4x4
+var iRowCount=0;
+const iRowCountMax=4;
+var iColumnCount=0;
+const iColumnCountMax=4;
+var arrayPuzzleTileCountId = [];
+var arrayPuzzleTilePos = [ [],[],[],[] ];
+
+const iTileBgCountMax=iRowCountMax*iColumnCountMax;
+
+//added by Mike, 20231123
+var bSoldierTileTypeDone=false;
+var bTankTileTypeDone=false;
+var bBuildingTileTypeDone=false;
+
+
+//added by Mike, 20231109
+var bHasHitTileWithForeignKey=false;
+var bIsPuzzleDone=false;
+
+var bHasClosedPuzzle=false;
+
+//added by Mike, 20231124
+var bIsBossBattleDone=false;
+
+//added by Mike, 20231126
+var bIsMonsterBossHit=false;
+//edited by Mike, 20231129
+var iBossLife=3;//1;//50;
+
+//added by Mike, 20231111
+var bIsActionKeyPressed=false;
+
+//added by Mike, 20231119
+var bIsPuzzleTileTargetHit=false;
+
+//added by Mike, 20231114
+var iInputDelayCountMax=3;
+var iInputDelayCount=iInputDelayCountMax;
+
+//added by Mike, 20231122
+var bHasViewedHowToPlayGuide=false;
+
+//added by Mike, 20231116
+var bIsStillUsingItchScreen=false;
+
+//added by Mike, 20231111
+//reference: https://github.com/usbong/tugon/blob/main/mainLinux.cpp;
+//last accessed: 20221125
+var bIsExecutingShake=false;
+var iDestroyHumanShakeDelayCount=0;
+var iDestroyHumanShakeDelayMax=5;
+
+var iShakeOffsetWidthMax=2;
+var iShakeOffsetHeightMax=2;
+
+var iShakeOffsetWidth=iShakeOffsetWidthMax;
+var iShakeOffsetHeight=iShakeOffsetHeightMax;
+
+//added by Mike, 20231112
+const sAudioEffectActionStart="assets/audio/usbongGameOff2023TapLoudEdited.mp3";
+
+//added by Mike, 20231114
+const sAudioEffectLowPower="assets/audio/voiceover/lowpower.mp3";
+
+//added by Mike, 20231130
+const sAudioEffectActionCannonFire ="assets/audio/usbongGameOff2023AudioEffectsCannon.mp3";
+
+
+//added by Mike, 20231129
+//TODO: -update: this
+const sAudioBGM="assets/audio/usbongGameOff2023BGM.mp3";
+
+
+//added by Mike, 20231115
+var iAnimationCount=-1;//0; start at -1
+var iAnimationCountMax=5;
+var iAnimationDelayCount=10; //0
+var iAnimationDelayCountMax=10;
+
+//added by Mike, 20231127
+var iMonsterAnimationCount=-1;//0; start at -1
+var iMonsterAnimationCountMax=5;
+var iMonsterAnimationDelayCount=10; //0
+var iMonsterAnimationDelayCountMax=10;
+
+//added by Mike, 20231119
+var iExplosionEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iExplosionEffectAnimationCountMax=5;
+var iExplosionEffectAnimationDelayCount=0;
+var iExplosionEffectAnimationDelayCountMax=4;//1;
+
+//added by Mike, 20231127
+var iMonsterExplosionEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iMonsterExplosionEffectAnimationCountMax=5;
+var iMonsterExplosionEffectAnimationDelayCount=0;
+//edited by Mike, 20231128
+var iMonsterExplosionEffectAnimationDelayCountMax=2;//4;//1;
+
+//added by Mike, 20231128
+var iTransitionFromPuzzleToBossDelayCount=0;
+var iTransitionFromPuzzleToBossDelayCountMax=150;//100;
+
+//added by Mike, 20231128
+var iMonsterBossAttackDelayCount=0;
+var iMonsterBossAttackDelayCountMax=120;
+
+//added by Mike, 20231120
+var iImageExplosionEffectAnimationWidth=64;
+var iImageExplosionEffectAnimationHeight=64;
+
+//added by Mike, 20231127
+var iTransitionRotate=0;
+var iTransitionScale=0;//1;
+var iTransitionDelayCount=0;
+var iTransitionDelayCountMax=20;
+
+var bIsExecutingTransition=false;
+var bIsTransitionFirstPartDone=false;
+
+//added by Mike, 20231121
+var iMouseAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iMouseAnimationCountMax=5;
+var iMouseAnimationDelayCount=0;
+var iMouseAnimationDelayCountMax=4;//1;
+
+//edited by Mike, 20231124; from 20231123
+var iScore=10000;//0;
+var iTargetScore=10000;//0;
+
+//added by Mike, 20231129; from 20231124
+var bIsIncreasingScore=false;//true;
+
+//added by Mike, 20231125
+var iTextScoreDivWidthOffset=5;
+var iTextScoreDivWidth;
+var iTextScoreShadowDivWidthOffset=1;
+
+//added by Mike, 20231127
+var iCurrSnowFlakeCount=0;
+var iCurrSnowFlakeCountMax=20;
+var iCurrSnowFlakeCountPosX=0;
+var iCurrSnowFlakeCountPosY=0;
+
+//added by Mike, 20231129
+var iSoldierAnimationScale=0;
+
+//added by Mike, 20231124
+//note: acceleration
+
+var mainImageTileProjectileStepYMax=20;//20;
+var mainImageTileProjectileStepXMax=20;//20;
+
+var mainImageTileProjectileVelocityY=20;//4;//1;
+var mainImageTileProjectileVelocityX=20;//4;//1;
+
+var mainImageTileProjectileStepYMin=mainImageTileProjectileVelocityY;//4;//12;
+var mainImageTileProjectileStepXMin=mainImageTileProjectileVelocityX;//4;//12;
+
+var mainImageTileProjectileStepY=mainImageTileProjectileStepYMin;//20;
+var mainImageTileProjectileStepX=mainImageTileProjectileStepYMin;//20;
+
+//added by Mike, 20231125
+var mainImageMonsterPosX=0;
+var mainImageMonsterPosY=0;
+
+//added by Mike, 20231126
+var mainImageMonsterBossPosX=500;
+var mainImageMonsterBossPosY=10;
+
+
+//added by Mike, 20231124
+//note: parameters
+var iDefaultAnimationImageX=0;//-32; //default x
+var iDefaultAnimationImageY=0;//-32; //default y
+
+//edited by Mike, 20230418
+//iTotalAnimImageFrameCount=4;//2;
+var iTotalAnimImageFrameCount=2;
+
+//edited by Mike, 20230322
+var iImageFrameWidth=64;// 32; //0;
+var iImageFrameHeight=64;// 32;
+
+//added by Mike, 20231121
+var iMouseInputImageWidth=64;
+var iMouseInputImageHeight=64;
+
+
+//added by Mike, 20231128
+var iCurrTextCharacterCount=0;
+var iCurrTextCharacterCountMax=0;
+var sCurrText="";
+
+//added by Mike, 20231128
+var iTitleExplosionEffectDelayCount=0;
+var iTitleExplosionEffectDelayCountMax=200;
+
+//added by Mike, 20231128
+var iTitlePressStartEffectDelayCount=0;
+var iTitlePressStartEffectDelayCountMax=5;
+
+//added by Mike, 20231129
+var ihowToPlayGuideImageFrame2DelayCount=0;
+var ihowToPlayGuideImageFrame2DelayCountMax=8;
+
+
+/*
+//added by Mike, 20221108
+var iCountMovementStep=0;
+
+//added by Mike, 20221213
+const iCountInitMovementStepMax=15;
+const iCountMovementStepMax=100-iCountInitMovementStepMax;
+
+//added by Mike, 20221214
+var arrayCountMovementStep= [];
+
+var bIsInitAutoGeneratePuzzleFromEnd=false;
+var iDelayAnimationCountMovementStep=0;
+const iDelayAnimationCountMovementStepMax=6;
+
+//added by Mike, 20221129
+var iPrevDirection=0;
+*/
+
+//added by Mike, 20231119; from 20221121
+var iDelayAnimationCountEnter=0;
+const iDelayAnimationCountEnterMax=10;
+
+//added by Mike, 20231121
+var bHasViewedTitle=false;
+
+var bHasPressedStart=false;
+
+
+//added by Mike, 20230123
+var iPuzzleTileWidth=64;
+var iPuzzleTileHeight=64;
+
+//added by Mike, 20230123
+const iPuzzleTileTotalWidthMax=iPuzzleTileWidth*iColumnCountMax;
+const iPuzzleTileTotalHeightMax=iPuzzleTileHeight*iRowCountMax;
+
+//added by Mike, 20231126
+var iMonsterTileWidth=64;
+var iMonsterTileHeight=64;
+
+var iMonsterBossTileWidth=128;
+var iMonsterBossTileHeight=128;
+
+var iBorderOffset=0;
+var iOffsetWidth=0;
+var iOffsetHeight=0;
+
+
+
+	//added by Mike, 20221214
+	var iCountMovementStep=0;
+	const iCountInitMovementStepMax=15;
+	const iCountMovementStepMax=100-iCountInitMovementStepMax;
+	//edited by Mike, 20230421; from 20230418
+	var iCountMovementStepDelay=0;
+	const iCountMovementStepDelayMax=10;
+
+	//added by Mike, 20230421
+	//SOH-CAH-TOA
+	//note: Max increase incrementally angle to end destination
+	const iCountMovementDiagonalStepMax=5; //10
+	var iCountMovementDiagonalStep=iCountMovementDiagonalStepMax;
+	//edited by Mike, 20230426; from 20230425
+	//360 and 0, @12 o'clock; rotation; image and step direction
+	//inverted y;
+	//SOH-CAH-TOA; where: use of cos and sin also interchanged;
+	var iMainImageTileStepAngle=0;
+    //var iMainImageTileStepAngleTemp=0;
+
+    //added by Mike, 20230427
+    var newMainImageTileProjectilePosX=0;
+    var newMainImageTileProjectilePosY=0;
+    var bHasFired=false;
+
+	//added by Mike, 20230423
+	var iMousePointPosX=0;
+	var iMousePointPosY=0;
+
+	var iPrevDirection=0;
+	var bIsInitAutoGeneratePuzzleFromEnd=true;
+
+	const iKEY_W = 0;
+	const iKEY_S = 1;
+	const iKEY_A = 2;
+	const iKEY_D = 3;
+
+	//edited by Mike, 20231125; from 20230418
+/*
+	const iKEY_I = 4;
+	const iKEY_K = 5;
+	const iKEY_J = 6;
+	const iKEY_L = 7;
+
+
+	//added by Mike, 20230418
+	const iKEY_Q = 4; //TOP-LEFT
+	const iKEY_E = 5; //TOP-RIGHT
+	const iKEY_C = 6; //BOTTOM-RIGHT
+	const iKEY_Z = 7; //BOTTOM-LEFT
+
+	const iKEY_I = 8;
+	const iKEY_K = 9;
+	const iKEY_J = 10;
+	const iKEY_L = 11;
+
+	//edited by Mike, 20230418
+	const iTotalKeyCount = 12; //8; //4;
+	const iDirectionTotalKeyCount = 8; //4;
+*/
+	const iTotalKeyCount = 4; //8; //12;
+	const iDirectionTotalKeyCount = 4; //8
+
+	//added by Mike, 20230421
+	var iDirection=-1;
+
+	//added by Mike, 20231125
+	//https://www.w3schools.com/js/js_arrays.asp; last accessed: 20220823
+	const arrayKeyPressed = [];
+	for (iCount=0; iCount<iTotalKeyCount; iCount++) {
+		arrayKeyPressed[iCount]=false;
+	}
+
+
+	var arrayCountMovementStep= [];
+
+	//added by Mike, 20230311
+	var iFacingDirection=0;
+
+	const iFACING_DOWN=0;
+	const iFACING_UP=1;
+	const iFACING_LEFT=2;
+	const iFACING_RIGHT=3;
+
+	//edited by Mike, 20230314
+	//note: VALUES set in init()
+	//const iTotalAnimImageFrameCount=2;//6;
+	var iTotalAnimImageFrameCount;//=4;//6;
+	var iAnimImageFrameCount;//=0;
+
+	var iDefaultAnimationImageX;//=0; //default x
+	var iDefaultAnimationImageY;//=0;//-32; //default y
+
+//	var iTotalAnimImageFrameCount=4;
+
+	/*	//removed by Mike, 20230312
+	var iImageFrameSizeX=0;
+	var iImageFrameSizeY=32;
+*/
+	//added by Mike, 20230315
+	//edited by Mike, 20230418
+	//var iAnimImageDirection=0; //vertical
+	var iAnimImageDirection=1; //horizontal
+
+	const AnimImageDirection_VERTICAL=0;
+	const AnimImageDirection_HORIZONTAL=1;
+
+
+	var bIsWalkingAction=true; //false;
+
+	//edited by Mike, 20221129
+	//1000/60=16.66; 60 frames per second
+	//1000/30=33.33; 30 frames
+	const fFramesPerSecondDefault=16.66;
+	//const fFramesPerSecondDefault=33.33;
+	var fFramesPerSecond=fFramesPerSecondDefault;
+	var iCurrentIntervalId=-1;
+
+	//edited by Mike, 20230315; from 20230311
+	//adds 6 frames before frame update
+	var iDelayAnimationCountMovementStep=0;
+	var iDelayAnimationCountMovementStepMax=12; //6;
+
+	//added by Mike, 20230410
+	var mainImageTilePosX=0;
+	var mainImageTilePosY=0;
+	//edited by Mike, 20230418
+	var mainImageTileStepX=2;//0; //2;
+	var mainImageTileStepY=2;//0; //2;
+
+	//added by Mike, 20230427
+	var mainImageTileProjectilePosX=0;
+	var mainImageTileProjectilePosY=0;
+
+/*	//removed by Mike, 20231124
+	//edited by Mike, 20230418
+	var mainImageTileProjectileStepX=2;//0; //2;
+	var mainImageTileProjectileStepY=2;//0; //2;
+*/
+
+	//edited by Mike, 20230314
+/*
+	const iStageMaxWidth=160*2; //160;
+	const iStageMaxHeight=144*2; //144;
+*/
+	//TO-DO: -add: auto-update Canvas' width and height to be EXACT
+/*	//edited by Mike, 20231121
+	var iStageMaxWidth=448; //640;
+	var iStageMaxHeight=402; //576;
+*/
+	var iStageMaxWidth=640;
+	var iStageMaxHeight=360; //480
+
+//	var iHorizontalOffset=0;
+	var iVerticalOffset=0;
+
+	//note: for INNER SCREEN
+//edited by Mike, 20231126; itch.io; screen.width appears to cause incorrect output;
+//due to itch.io window top-left at 0;
+//iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+iHorizontalOffset=0;
+
+//edited by Mike, 20231126
+iVerticalOffsetInnerScreen=0;
+//iVerticalOffsetInnerScreen=10;
+
+/*
+	//added by Mike, 20230312
+	//note: press TAB, then ENTER to SET
+	function setAnimImageFrameX() {
+		var setAnimImageFrameXText = document.getElementById("textSetAnimImageFrameXId");
+
+		//notes: auto-sets to negative number;
+		//TO-DO: -add: a checkbox as switch?
+		if (setAnimImageFrameXText.value>0) {
+			setAnimImageFrameXText.value=setAnimImageFrameXText.value*-1;
+		}
+
+		//alert(setAnimImageFrameXText.value);
+		iDefaultAnimationImageX=setAnimImageFrameXText.value;//-32;
+	}
+
+	function setAnimImageFrameY() {
+		var setAnimImageFrameYText = document.getElementById("textSetAnimImageFrameYId");
+
+		//notes: auto-sets to negative number;
+		//TO-DO: -add: a checkbox as switch?
+		if (setAnimImageFrameYText.value>0) {
+			setAnimImageFrameYText.value=setAnimImageFrameYText.value*-1;
+		}
+
+		//alert(setAnimImageFrameXText.value);
+		iDefaultAnimationImageY=setAnimImageFrameYText.value;//-32;
+	}
+
+	function setAnimImageFrameWidth() {
+		var setAnimImageFrameWidthText = document.getElementById("textSetAnimImageFrameWidthId");
+
+		//alert(setAnimImageFrameXText.value);
+		iImageFrameWidth=setAnimImageFrameWidthText.value;//-32;
+	}
+
+	function setAnimImageFrameHeight() {
+		var setAnimImageFrameHeightText = document.getElementById("textSetAnimImageFrameHeightId");
+
+		//alert(setAnimImageFrameXText.value);
+		iImageFrameHeight=setAnimImageFrameHeightText.value;//-32;
+	}
+
+	function setAnimDelay() {
+		var setAnimDelayText = document.getElementById("textSetAnimDelayId");
+					iDelayAnimationCountMovementStepMax=setAnimDelayText.value;
+	}
+
+	function setTotalAnimImageFrameCount() {
+		var setTotalAnimImageFrameCountText = document.getElementById("textSetTotalAnimImageFrameCountId");
+
+		//notes: auto-sets to positive number;
+		if (setTotalAnimImageFrameCountText.value<0) {
+			setTotalAnimImageFrameCountText.value=setTotalAnimImageFrameCountText.value*-1;
+		}
+
+		//edited by Mike, 20230314
+		iTotalAnimImageFrameCount=setTotalAnimImageFrameCountText.value;
+	}
+*/
+
+
+	//added by Mike, 20230427
+	function resetProjectile() {
+		var mainImageTile = document.getElementById("mainImageTileImageId");
+
+		var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+/*	//edited by Mike, 20231125
+		//added by Mike, 20230427
+		mainImageTileProjectilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+
+		//edited by Mike, 20231124
+		//mainImageTileProjectilePosY=iStageMaxHeight/2-iImageFrameHeight/2;
+		mainImageTileProjectilePosY=iStageMaxHeight-iImageFrameHeight;
+*/
+		mainImageTileProjectilePosX = mainImageTile.style.left;
+		mainImageTileProjectilePosY = mainImageTile.style.top;
+
+
+		//alert("mainImageTileProjectilePosX: "+mainImageTileProjectilePosX);
+		//alert("mainImageTileProjectilePosY: "+mainImageTileProjectilePosY);
+
+		//TO-DO: -update: newMainImage... step
+		newMainImageTileProjectilePosX=0; //mainImageTileProjectilePosX;
+		newMainImageTileProjectilePosY=0; //mainImageTileProjectilePosY;
+
+//alert("mainImageTileProjectileVelocityY: "+mainImageTileProjectileVelocityY);
+
+/*		//removed by Mike, 20231125
+		//added by Mike, 20231125
+		mainImageTileProjectileVelocityY=4;
+		mainImageTileProjectileVelocityX=4;
+*/
+
+/*	//removed by Mike, 20231125
+		mainImageTileProjectile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+
+		mainImageTileProjectile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+*/
+		mainImageTileProjectile.style.left = mainImageTileProjectilePosX;
+		mainImageTileProjectile.style.top = mainImageTileProjectilePosY;
+
+		mainImageTileProjectile.style.visibility="hidden";
+		bHasFired=false;
+
+		//added by Mike, 20230428
+		iMainImageTileStepAngle=0;
+
+		//added by Mike, 20231124
+		mainImageTileProjectileStepY=mainImageTileProjectileStepYMin;//20;
+		mainImageTileProjectileStepX=mainImageTileProjectileStepXMin;//20;
+
+
+		//alert("dito");
+	}
+
+	//added by Mike, 20230312
+	//TO-DO: -update: variable container names
+	//TO-DO: -fix: SET button NOT focused on SAFARI
+	function init() {
+/* //removed by Mike, 20231124
+		//TO-DO: -update: this; add in window, input boxes
+		//note: parameters
+		iDefaultAnimationImageX=0;//-32; //default x
+ 		iDefaultAnimationImageY=0;//-32; //default y
+
+		//edited by Mike, 20230418
+		//iTotalAnimImageFrameCount=4;//2;
+		iTotalAnimImageFrameCount=2;
+
+		//edited by Mike, 20230322
+		iImageFrameWidth=64;// 32; //0;
+		iImageFrameHeight=64;// 32;
+
+		//added by Mike, 20231121
+		iMouseInputImageWidth=64;
+		iMouseInputImageHeight=64;
+*/
+
+/* //audio play blocked by Firefox, Chrome browsers,
+// if no interaction yet with user;
+
+//reference#1: https://stackoverflow.com/questions/64446276/how-to-enable-audio-autoplay-on-a-site; last accessed: 20231129
+//answer by: sandeep joshi, 20201020T1716
+
+//reference#2: https://stackoverflow.com/questions/11652197/play-multiple-sound-at-the-same-time; last accessed: 20231129
+//answer by: Lasse Christiansen, 20120725T2157
+
+var snd1  = new Audio();
+var src1  = document.createElement("source");
+src1.type = "audio/mpeg"; //"audio/mpeg";
+src1.src  = sAudioBGM;//"audio/Dombra.mp3";
+snd1.appendChild(src1);
+
+var snd2  = new Audio();
+var src2  = document.createElement("source");
+src2.type = "audio/mpeg"; //"audio/mpeg";
+src2.src  = sAudioEffectActionStart;//"audio/(TESBIHAT).mp3";
+snd2.appendChild(src2);
+
+snd1.play();
+
+alert("HALLO");
+*/
+
+		//added by Mike, 20231129
+		//-----------		
+		var myAudio = document.getElementById("myAudioId");
+		
+        myAudio.setAttribute("src", sAudioBGM);
+
+        fMyAudioVolume=1.0;//0.4;
+        myAudio.volume=fMyAudioVolume;
+        myAudio.loop=true;		
+        myAudio.play();
+
+		//alert("DITO");	
+		//-----------	
+
+
+		//added by Mike, 20231121
+		var myCanvas = document.getElementById("myCanvasId");
+
+		myCanvas.style.top = (iVerticalOffsetInnerScreen+0)+"px";
+
+    //alert(screen.width);
+
+    //removed by Mike, 20231126
+		//iHorizontalOffset=myCanvas.getBoundingClientRect().x;
+    //iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+    iHorizontalOffset=0;
+
+    myCanvas.style.left=iHorizontalOffset+"px";
+
+/*
+    //added by Mike, 20231126
+//    document.addEventListener("fullscreenchange", function() {
+    object.onfullscreenchange = function(){
+
+////      output.innerHTML = "fullscreenchange event fired!";
+////      alert("DITO");
+
+	    iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+    };
+*/
+
+    //added by Mike, 20231126
+    var myCanvasTwo = document.getElementById("myCanvasTwoId");
+
+		myCanvasTwo.style.top = (iVerticalOffsetInnerScreen+0)+"px";
+
+		//iHorizontalOffset=myCanvasTwo.getBoundingClientRect().x;
+    myCanvasTwo.style.left = iHorizontalOffset+"px";
+    myCanvasTwo.style.visibility="hidden";
+
+
+/*
+		var setAnimImageFrameWidthText = document.getElementById("textSetAnimImageFrameWidthId");
+		var setAnimImageFrameHeightText = document.getElementById("textSetAnimImageFrameHeightId");
+
+		var setAnimImageFrameXText = document.getElementById("textSetAnimImageFrameXId");
+		var setAnimImageFrameYText = document.getElementById("textSetAnimImageFrameYId");
+
+		var setTotalAnimImageFrameCountText = document.getElementById("textSetTotalAnimImageFrameCountId");
+
+		var setAnimDelayText = document.getElementById("textSetAnimDelayId");
+
+		//added by Mike, 20230315
+		var setPanelTable = document.getElementById("tableSetPanelId");
+    */
+
+		var mainImageTile = document.getElementById("mainImageTileImageId");
+
+		var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+
+		var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+		//added by Mike, 20231121
+		var mouseInputImage = document.getElementById("mouseInputImageId");
+
+		//added by Mike, 20231121
+		var titleImage = document.getElementById("titleImageId");
+		//titleImage.style.visibility="hidden";
+
+		var iTitleImageWidth = (titleImage.clientWidth);
+		var iTitleImageHeight = (titleImage.clientHeight);
+
+		titleImage.style.top = (iVerticalOffsetInnerScreen+0+iStageMaxHeight/3 -iTitleImageHeight/2)+"px";
+		titleImage.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTitleImageWidth/2 +"px";
+
+
+		//added by Mike, 20231123
+		var textScoreDiv = document.getElementById("textScoreDivId");
+
+//		var iTextScoreDivWidthOffset=5;
+		iTextScoreDivWidth = (textScoreDiv.clientWidth)+iTextScoreDivWidthOffset;
+
+		textScoreDiv.style.left = iHorizontalOffset+iStageMaxWidth-iTextScoreDivWidth+"px";
+		textScoreDiv.style.top= (0)+"px";
+
+		//added by Mike, 20231125
+		var textScoreShadowDiv = document.getElementById("textScoreShadowDivId");
+
+		//var iTextScoreShadowDivWidthOffset=1;
+		//var iTextScoreShadowDivWidth = (textScoreShadowDiv.clientWidth)+iTextScoreShadowDivWidthOffset;
+
+		textScoreShadowDiv.style.left = parseInt(textScoreDiv.style.left)+iTextScoreShadowDivWidthOffset +"px";
+
+
+		//textScoreShadowDiv.style.left = parseInt(textScoreDiv.style.left)+iTextScoreShadowDivWidthOffset+"px";
+
+		//textScoreShadowDiv.style.left = iHorizontalOffset+iStageMaxWidth-iTextScoreDivWidth+iTextScoreShadowDivWidthOffset+"px";
+
+		textScoreShadowDiv.style.top = textScoreDiv.style.top;
+
+/*
+		setAnimImageFrameWidthText.value=iImageFrameWidth;
+		setAnimImageFrameHeightText.value=iImageFrameHeight;
+
+		setAnimImageFrameXText.value=iDefaultAnimationImageX;
+		setAnimImageFrameYText.value=iDefaultAnimationImageY;
+
+		//added by Mike, 20230314
+	setTotalAnimImageFrameCountText.value=iTotalAnimImageFrameCount;
+		//added by Mike, 20230315
+setAnimDelayText.value=iDelayAnimationCountMovementStepMax;
+
+
+		//added by Mike, 20230315
+		setPanelTable.style.left = (iHorizontalOffset+iStageMaxWidth)+"px";
+		setPanelTable.style.top = (iVerticalOffsetInnerScreen)+"px";
+		setPanelTable.style.visibility = "visible";
+*/
+
+		mainImageTile.style.visibility = "hidden";
+		mainImageTileTankBody.style.visibility = "hidden";
+
+		mainImageTileProjectile.style.visibility = "hidden";
+
+/*	//removed by Mike, 20231125
+		//added by Mike, 20230423
+		mainImageTilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+		//edited by Mike, 20231124
+		//mainImageTilePosY=iStageMaxHeight/2-iImageFrameHeight/2;
+		mainImageTilePosY=iStageMaxHeight-iImageFrameHeight;
+*/
+		//added by Mike, 20231125
+		mainImageTilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+    //edited by Mike, 20231126
+    //mainImageTilePosY=iStageMaxHeight-iImageFrameHeight;
+    mainImageTilePosY=iStageMaxHeight-iImageFrameHeight-iImageFrameHeight*0.25;
+
+		mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+    //edited by Mike, 20231126
+		mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+
+		//added by Mike, 20231124
+		mainImageTileTankBody.style.left = mainImageTile.style.left;
+		mainImageTileTankBody.style.top = mainImageTile.style.top;
+
+		//added by Mike, 20231124
+		//tank body
+		mainImageTileTankBody.style.objectPosition = "-" + 128 + "px -" + 192 + "px";
+//		mainImageTileTankBody.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+
+		mainImageTile.style.objectPosition = "-" + 192 + "px -" + 192 + "px";
+
+		//added by Mike, 20231124
+		mainImageTileProjectile.style.objectPosition = "-" + 0 + "px -" + 128 + "px";
+
+/*	//edited by Mike, 20231125
+		//added by Mike, 20230427
+		mainImageTileProjectilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+
+		//edited by Mike, 20231124
+		//mainImageTileProjectilePosY=iStageMaxHeight/2-iImageFrameHeight/2;
+		mainImageTileProjectilePosY=iStageMaxHeight-iImageFrameHeight;
+*/
+
+		mainImageTileProjectilePosX = mainImageTile.style.left;
+		mainImageTileProjectilePosY = mainImageTile.style.top;
+
+
+/* //removed by Mike, 20231123
+		//TO-DO: -update: "newMain" to ..."step"
+		newMainImageTileProjectilePosX=0;//mainImageTileProjectilePosX;
+		newMainImageTileProjectilePosY=0;//mainImageTileProjectilePosY;
+*/
+
+/*	//edited by Mike, 20231125
+		mainImageTileProjectile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+
+		mainImageTileProjectile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+*/
+		mainImageTileProjectile.style.left = mainImageTileProjectilePosX;
+		mainImageTileProjectile.style.top = mainImageTileProjectilePosY;
+
+		//added by Mike, 20231121
+
+		var textEnterDiv = document.getElementById("textEnterDivId");
+
+			var iTextEnterDivWidth = (textEnterDiv.clientWidth);
+			var iTextEnterDivHeight = (textEnterDiv.clientHeight);
+
+			textEnterDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTextEnterDivWidth/2 +"px";
+
+			textEnterDiv.style.top = 0+iStageMaxHeight-iTextEnterDivHeight*2+"px";
+
+			//alert ("textEnterDiv.style.left: "+textEnterDiv.style.left);
+			//alert ("textEnterDiv.style.top: "+textEnterDiv.style.top);
+
+			textEnterDiv.style.visibility="visible";
+
+			iTransitionScale=1;
+			
+			textEnterDiv.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";	
+			
+
+		var mouseInputImage = document.getElementById("mouseInputImageId");
+/*
+		mouseInputImage.style.left = (iHorizontalOffset+iStageMaxWidth/2-iMouseInputImageWidth/2)+"px";
+
+		mouseInputImage.style.top = (iVerticalOffsetInnerScreen+iStageMaxHeight+iMouseInputImageHeight/2)+"px";
+*/
+
+		mouseInputImage.style.left = (iHorizontalOffset+iStageMaxWidth/2-iTextEnterDivWidth/2+iMouseInputImageWidth/2)+"px";
+
+		mouseInputImage.style.top = (iVerticalOffsetInnerScreen+iStageMaxHeight+iTextEnterDivHeight/2)+"px";
+
+		mouseInputImage.style.objectPosition = "-" + 0 + "px -" + 192 + "px";
+
+    //added by Mike, 20231126
+    mainImageMonsterPosX=iHorizontalOffset+iStageMaxWidth/2-iMonsterTileWidth;
+//    mainImageMonsterPosY=iVerticalOffsetInnerScreen+iStageMaxHeight/2-iMonsterTileWidth;
+    mainImageMonsterPosY=iVerticalOffsetInnerScreen+0-iMonsterTileHeight;
+
+		//removed by Mike, 20231129
+		//setMonsterExplosionEffectPosition(parseInt(titleImage.style.left)+iTitleImageWidth*0.15,parseInt(titleImage.style.top)+iTitleImageHeight/3);
+	}
+
+	//added by Mike, 20231122
+	function isAllMultipleObjectsOfTileTypeDone(sCurrHitTileInput, sCurrHitTileTypeInput) {
+
+		//added by Mike, 20231123
+		var iObjectCountForTileType=0;
+
+		//note: "var" to create new container inside for loop
+    	for (var iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+    		for (var iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+				var iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+				sCurrHitTile=arrayPuzzleTileCountId[iTileBgCount].alt;
+
+				sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+
+				sCurrHitTileType="";
+
+				sCurrHitTileType=Math.floor(parseInt((sCurrHitTile-1)/4));
+
+				if (sCurrHitTileType==sCurrHitTileTypeInput) {
+					if (sCurrHitTile==sCurrHitTileInput) {
+						//alert("sCurrHitTile: "+sCurrHitTile);
+
+						//added by Mike, 20231123
+						iObjectCountForTileType++;
+					}
+					else {
+						return false;
+					}
+				}
+			}
+		}
+
+		//added by Mike, 20231123
+		//alert("iObjectCountForTileType: "+iObjectCountForTileType);
+
+		if (iObjectCountForTileType==1) {
+			//bHasOnlyOneObjectCountForTileType=true;
+			return false;
+		}
+
+		//alert("sCurrHitTileTypeInput: "+sCurrHitTileTypeInput);
+
+		//added by Mike, 20231123
+		//alert("sCurrHitTileTypeInput: "+sCurrHitTileTypeInput);
+
+		if (parseInt(sCurrHitTileTypeInput)==0) {
+			if (bSoldierTileTypeDone) {
+				return false;
+			}
+			bSoldierTileTypeDone=true;
+		}
+		else if (parseInt(sCurrHitTileTypeInput)==1) {
+			if (bTankTileTypeDone) {
+				return false;
+			}
+
+			bTankTileTypeDone=true;
+		}
+		else if (parseInt(sCurrHitTileTypeInput)==2) {
+
+			//alert(">>>bBuildingTileTypeDone: "+bBuildingTileTypeDone);
+
+			if (bBuildingTileTypeDone) {
+				//alert(">>>>>>>>>>>>>>>>>>>>>>>");
+
+				return false;
+			}
+
+			bBuildingTileTypeDone=true;
+		}
+
+
+		//soldier; 1; 0+1
+		//tank; 2; 1+1
+		//building; 3; 2+1
+		//iScore+=iObjectCountForTileType;
+
+		//iScore+=iObjectCountForTileType*(sCurrHitTileTypeInput+1)*777;
+
+		//edited by Mike, 20231123
+		//iTargetScore=iScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1)*777;
+
+    //edited by Mike, 20231126; from 20231124
+//    bIsIncreasingScore=true;
+
+		//OK;
+		if (iTargetScore==iScore) {
+			//iTargetScore=iScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1);//*777;
+			iTargetScore=iScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1)*777;
+
+			//alert("iTargetScore: "+iTargetScore);
+		}
+		else {
+/*
+			alert("DITO");
+			alert("iScore: "+iScore);
+			alert("iTargetScore: "+iTargetScore);
+*/
+			iScore=iTargetScore;
+	//		iTargetScore=iTargetScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1);//*777;
+			iTargetScore=iTargetScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1)*777;
+		}
+
+
+		return true;
+	}
+
+	//added by Mike, 20231122
+	function verifyIfAllObjectsOfTileTypeDone(iXPos, iYPos) {
+
+		//bIsPuzzleDone=true;
+
+		//note: "var" to create new container inside for loop
+    	for (var iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+    		for (var iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+				var iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+				//alert("!!!! iTileBgCount: "+iTileBgCount);
+
+				var iTilePosX= iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount;
+
+				var iTilePosY=0+iOffsetHeight+iPuzzleTileHeight*iRowCount+iBorderOffset*iRowCount;
+
+
+				if (isPointsOfRectIntersectingPointsOfRect(iXPos,iYPos,iTilePosX,iTilePosY)) {
+
+					sCurrHitTile=arrayPuzzleTileCountId[iTileBgCount].alt;
+
+					sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+
+					sCurrHitTileType="";
+
+
+/*
+					if (iPrevHitTileBgCount!=-1) {
+						sPrevHitTile=arrayPuzzleTileCountId[iPrevHitTileBgCount].alt;
+						sPrevHitTile=sPrevHitTile.substring(0,sPrevHitTile.indexOf(",FK="));
+					}
+					sPrevHitTileType="";
+*/
+
+					sCurrHitTileType=Math.floor(parseInt((sCurrHitTile-1)/4));
+
+					//alert (">> sCurrHitTile: "+sCurrHitTile);
+
+					//verify all tiles if all objects of same type already use the same tile
+					if (isAllMultipleObjectsOfTileTypeDone(sCurrHitTile, sCurrHitTileType)) {
+
+						//alert("HAS NO MORE COPIES!");
+
+						return true;
+					}
+
+					return false;
+				}
+			}
+		}
+
+		//alert("HAS NO MORE COPIES!");
+
+		//TODO: -update: this
+		return true; //bIsPuzzleDone; //false;
+
+//		return false;
+	}
+
+
+	//added by Mike, 20231109
+	function isAutoVerifiedPuzzleDone() {
+
+		//bIsPuzzleDone=true;
+
+		//note: "var" to create new container inside for loop
+    	for (var iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+    		for (var iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+				var iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+				//alert("!!!! iTileBgCount: "+iTileBgCount);
+
+				//verify if all tiles do not have anymore copies;
+
+				//added by Mike, 20231111; hint "var" keyphrase
+				//fixed: game finished even if only triangle has no copy;
+				if (hasCopy(iTileBgCount)) {
+					//alert("DITO!");
+
+					//bIsPuzzleDone=false;
+
+					return false; //bIsPuzzleDone;
+				}
+
+/*
+				//verify for all tile types; alt
+				else {
+					bIsPuzzleDone=true;
+				}
+*/
+			}
+		}
+
+		//TODO: -update: this
+		return true; //bIsPuzzleDone; //false;
+
+//		return false;
+	}
+
+	//added by Mike, 20231120
+	function setExplosionEffectPosition(iTileBgCountInput) {
+		var explosionEffectImage = document.getElementById("explosionEffectImageId");
+
+    //added by Mike, 20231126
+    if (explosionEffectImage.style.visibility=="visible") {
+      return;
+    }
+
+		explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+
+		explosionEffectImage.style.visibility="visible";
+
+		iExplosionEffectAnimationDelayCount=iExplosionEffectAnimationDelayCountMax;
+
+		iExplosionEffectAnimationCount=-1; //0;
+
+		explosionEffectImage.style.left = parseInt(arrayPuzzleTileCountId[iTileBgCountInput].style.left,10)-iImageExplosionEffectAnimationWidth/2;
+
+		explosionEffectImage.style.top = parseInt(arrayPuzzleTileCountId[iTileBgCountInput].style.top,10)-iImageExplosionEffectAnimationHeight/2;
+	}
+
+  //added by Mike, 20231126
+  function setMonsterExplosionEffectPosition(iInputX, iInputY) {
+//    var explosionEffectImage = document.getElementById("explosionEffectImageId");
+    var explosionEffectImage = document.getElementById("explosionEffectToMonsterImageId");
+
+    //added by Mike, 20231126
+    if (explosionEffectImage.style.visibility=="visible") {
+      return;
+    }
+	
+	//edited by Mike, 20231127
+    //explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+    explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 128 + "px";
+
+    explosionEffectImage.style.visibility="visible";
+
+    iMonsterExplosionEffectAnimationDelayCount=iMonsterExplosionEffectAnimationDelayCountMax;
+
+    iMonsterExplosionEffectAnimationCount=-1; //0;
+
+    explosionEffectImage.style.left = iInputX-iImageExplosionEffectAnimationWidth/2;
+
+    explosionEffectImage.style.top = iInputY-iImageExplosionEffectAnimationHeight/2;
+  }
+
+  //added by Mike, 20231129
+  function setCityExplosionEffectPosition(iInputX, iInputY) {
+//    var explosionEffectImage = document.getElementById("explosionEffectImageId");
+    var explosionEffectImage = document.getElementById("explosionEffectToCityImageId");
+
+    //added by Mike, 20231126
+    if (explosionEffectImage.style.visibility=="visible") {
+      return;
+    }
+	
+	//edited by Mike, 20231127
+    //explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+    explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 128 + "px";
+
+    explosionEffectImage.style.visibility="visible";
+
+    iMonsterExplosionEffectAnimationDelayCount=iMonsterExplosionEffectAnimationDelayCountMax;
+
+    iMonsterExplosionEffectAnimationCount=-1; //0;
+
+    explosionEffectImage.style.left = iInputX-iImageExplosionEffectAnimationWidth/2;
+
+    explosionEffectImage.style.top = iInputY-iImageExplosionEffectAnimationHeight/2;
+  }
+
+  
+  	//added by Mike, 20231128
+	function executeEnterClickAnimation() {	
+		var textEnterDiv = document.getElementById("textEnterDivId");
+
+			
+		if (iTitlePressStartEffectDelayCount<iTitlePressStartEffectDelayCountMax) {
+			iTitlePressStartEffectDelayCount++;
+			return;	
+		}
+		else {
+			iTitlePressStartEffectDelayCount=0;
+		}
+		
+		//textEnterDiv.innerHTML = "START";
+		//textEnterDiv.innerHTML = "<font color='red'>START</font>";
+
+		//alert(iTransitionScale);
+		
+		if (iTransitionScale<1) {
+			iTransitionScale+=0.1
+		}
+		else if (iTransitionScale>0) {
+			iTransitionScale-=0.1
+		}
+
+		textEnterDiv.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";	
+	}
+
+	
+	//added by Mike, 20231121
+	function executeMouseClickAnimation() {
+		var mouseInputImage = document.getElementById("mouseInputImageId");
+    mouseInputImage.style.visibility="visible";
+
+		if (iMouseAnimationDelayCount==iMouseAnimationDelayCountMax) {
+			iMouseAnimationCount=(iMouseAnimationCount+1)%5; //last hidden
+
+
+			iMouseAnimationDelayCount=0;
+			/*
+			explosionEffectImage.style.visibility="visible";
+			*/
+			
+			//setMonsterExplosionEffectPosition(parseInt(titleImage.style.left)+iTitleImageWidth*0.15,parseInt(titleImage.style.top)+iTitleImageHeight/2);
+		}
+		else {
+			iMouseAnimationDelayCount++;
+
+	//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		}
+
+		//alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		if (iMouseAnimationCount==0) { //%2
+			mouseInputImage.style.objectPosition = "-" + 0 + "px -" + 192 + "px";
+		}
+		else {
+			mouseInputImage.style.objectPosition = "-" + 64 + "px -" + 192 + "px";
+		}
+	}
+
+	function executeExplosionEffect() {
+		var explosionEffectImage = document.getElementById("explosionEffectImageId");
+
+		if (explosionEffectImage.style.visibility=="hidden") {
+			return;
+		}
+
+		if (iExplosionEffectAnimationDelayCount==iExplosionEffectAnimationDelayCountMax) {
+	//	if (iExplosionEffectAnimationDelayCount>=iExplosionEffectAnimationDelayCountMax) {
+			iExplosionEffectAnimationCount=(iExplosionEffectAnimationCount+1)%5; //last hidden
+
+
+			iExplosionEffectAnimationDelayCount=0;
+			/*
+			explosionEffectImage.style.visibility="visible";
+			*/
+		}
+		else {
+			iExplosionEffectAnimationDelayCount++;
+
+	//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		}
+
+		//alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		if (iExplosionEffectAnimationCount==0) { //%2
+			explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+		}
+		else if (iExplosionEffectAnimationCount==1) {
+			explosionEffectImage.style.objectPosition = "-" + 128 + "px -" + 0 + "px";
+			//alert(">>>>");
+		}
+		else if (iExplosionEffectAnimationCount==2) {
+			explosionEffectImage.style.objectPosition = "-" + 128*2 + "px -" + 0 + "px";
+			//alert(">>>>");
+		}
+		else if (iExplosionEffectAnimationCount==3) {
+			explosionEffectImage.style.objectPosition = "-" + 128*3 + "px -" + 0 + "px";
+			//alert(">>>>");
+		}
+		else {
+			explosionEffectImage.style.visibility="hidden";
+		}
+	}
+
+
+  function executeExplosionEffectToMonsterBoss() {
+		var explosionEffectImage = document.getElementById("explosionEffectToMonsterImageId");
+
+		if (explosionEffectImage.style.visibility=="hidden") {
+			return;
+		}
+
+		if (iMonsterExplosionEffectAnimationDelayCount==iMonsterExplosionEffectAnimationDelayCountMax) {
+	//	if (iExplosionEffectAnimationDelayCount>=iExplosionEffectAnimationDelayCountMax) {
+			iMonsterExplosionEffectAnimationCount=(iMonsterExplosionEffectAnimationCount+1)%5; //last hidden
+
+
+			iMonsterExplosionEffectAnimationDelayCount=0;
+			/*
+			explosionEffectImage.style.visibility="visible";
+			*/
+		}
+		else {
+			iMonsterExplosionEffectAnimationDelayCount++;
+
+	//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		}
+
+		//alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		if (iMonsterExplosionEffectAnimationCount==0) { //%2
+			explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 128 + "px";
+		}
+		else if (iMonsterExplosionEffectAnimationCount==1) {
+			explosionEffectImage.style.objectPosition = "-" + 128 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else if (iMonsterExplosionEffectAnimationCount==2) {
+			explosionEffectImage.style.objectPosition = "-" + 128*2 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else if (iMonsterExplosionEffectAnimationCount==3) {
+			explosionEffectImage.style.objectPosition = "-" + 128*3 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else {
+			explosionEffectImage.style.visibility="hidden";
+			//added by Mike, 20231128
+			//iTitleExplosionEffectDelayCount=0;
+		}
+	}
+
+	function executeExplosionEffectToCity() {
+		var explosionEffectImage = document.getElementById("explosionEffectToCityImageId");
+
+/*		
+		if (iTransitionScale<1) {
+			iTransitionScale+=0.1
+		}
+		else if (iTransitionScale>0) {
+			iTransitionScale-=0.1
+		}
+*/
+		//iTransitionScale=0.5;
+		
+//		explosionEffectImage.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";	
+
+		//explosionEffectImage.style.transform = "scale("+0.5+","+0.5+")";	
+
+		if (explosionEffectImage.style.visibility=="hidden") {
+			return;
+		}
+
+		//alert("Dito");
+		
+		if (iMonsterExplosionEffectAnimationDelayCount==iMonsterExplosionEffectAnimationDelayCountMax) {
+	//	if (iExplosionEffectAnimationDelayCount>=iExplosionEffectAnimationDelayCountMax) {
+			iMonsterExplosionEffectAnimationCount=(iMonsterExplosionEffectAnimationCount+1)%5; //last hidden
+
+
+			iMonsterExplosionEffectAnimationDelayCount=0;
+			/*
+			explosionEffectImage.style.visibility="visible";
+			*/
+		}
+		else {
+			iMonsterExplosionEffectAnimationDelayCount++;
+
+	//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		}
+
+		//alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+		if (iMonsterExplosionEffectAnimationCount==0) { //%2
+			explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 128 + "px";
+		}
+		else if (iMonsterExplosionEffectAnimationCount==1) {
+			explosionEffectImage.style.objectPosition = "-" + 128 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else if (iMonsterExplosionEffectAnimationCount==2) {
+			explosionEffectImage.style.objectPosition = "-" + 128*2 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else if (iMonsterExplosionEffectAnimationCount==3) {
+			explosionEffectImage.style.objectPosition = "-" + 128*3 + "px -" + 128 + "px";
+			//alert(">>>>");
+		}
+		else {
+			explosionEffectImage.style.visibility="hidden";
+			//added by Mike, 20231128
+			//iTitleExplosionEffectDelayCount=0;
+		}
+	}
+
+	
+	//added by Mike, 20231127
+	function resetTransitionEffect() {						
+		var myDivTransitionEffect = document.getElementById("divTransitionEffectId");
+		
+		iTransitionScale=0; //0.00005;
+		iTransitionRotate=0;
+		iTransitionDelayCount=0;
+		
+		//added by Mike, 20231128
+		iTransitionFromPuzzleToBossDelayCount=0;
+				
+		myDivTransitionEffect.style.transform = "rotate("+iTransitionRotate+"deg)"+" scale("+iTransitionScale+","+iTransitionScale+")";	
+				
+		myDivTransitionEffect.style.visibility="visible";
+		
+		bIsExecutingTransition=true;
+		bIsTransitionFirstPartDone=false;
+		
+		//alert("HALLO!!");
+	}
+
+	function executeTransitionEffect() {
+		//added by Mike, 20231128
+		if (bIsPuzzleDone) {
+			if (iTransitionFromPuzzleToBossDelayCount<iTransitionFromPuzzleToBossDelayCountMax) {
+				iTransitionFromPuzzleToBossDelayCount++;
+				return;
+			}
+		}
+
+						
+		var myDivTransitionEffect = document.getElementById("divTransitionEffectId");
+		
+//		if (myDivTransitionEffect.style.visibility!=="visible") {
+
+		if (!bIsExecutingTransition) {
+			return;
+		}
+
+		//alert(bIsExecutingTransition);
+		
+		//alert(">>>>>>DITO");
+		
+		//alert(myDivTransitionEffect.style.visibility);
+			
+		//width of transition shape is also iStageMaxHeight;
+		myDivTransitionEffect.style.left=0+iHorizontalOffset+iStageMaxWidth/2-iStageMaxHeight/2+"px";
+		myDivTransitionEffect.style.top=0+iVerticalOffsetInnerScreen+iStageMaxHeight/2-iStageMaxHeight/2+"px";	
+
+		//myDivTransitionEffect.style.visibility="visible";
+		
+		iTransitionRotate=(iTransitionRotate+5)%360;
+		
+		//alert(">>>>>>iTransitionRotate: "+iTransitionRotate);
+		//alert(">>>>>>iTransitionScale: "+iTransitionScale);
+				
+		if (!bIsTransitionFirstPartDone) {		
+			if (iTransitionScale<2) {
+				iTransitionScale+=0.02;//1;
+				
+				//alert("scaling...");
+			}
+			else {
+				//alert("DONE!");
+			
+				iTransitionScale=2;
+				iTransitionRotate=0;
+
+				if (iTransitionDelayCount<iTransitionDelayCountMax) {
+				}
+				else {
+/*				
+					myDivTransitionEffect.style.visibility="hidden";
+					bIsExecutingTransition=false;
+*/					
+					bIsTransitionFirstPartDone=true;				
+					iTransitionDelayCount=0;
+									
+					//added by Mike, 20231127
+					if (!bIsPuzzleDone) {
+						//used when transitioning to puzzle from how to play guide
+						var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");		
+						//added by Mike, 20231129
+						var howToPlayGuideImageFrame2 = document.getElementById("howToPlayGuideImageFrame2Id");
+
+						
+						var mainImageMonster = document.getElementById("mainImageMonster0");
+						
+						//added by Mike, 20231128
+						var textScoreDiv = document.getElementById("textScoreDivId");
+						
+						howToPlayGuideImage.style.visibility = "hidden";
+						
+						//added by Mike, 20231129
+						howToPlayGuideImageFrame2.style.visibility = "hidden";
+									
+						mainImageMonster.style.visibility = "visible";
+						
+						textScoreDiv.style.visibility = "visible";
+					}
+					else {
+					  if (!bIsBossBattleDone) {					
+						if (!bHasClosedPuzzle) {
+							closePuzzle();
+						}
+					
+						var mainImageMonster = document.getElementById("mainImageMonster0");
+						var textScoreDiv = document.getElementById("textScoreDivId");
+						var myCanvasTwo = document.getElementById("myCanvasTwoId");
+						var mainImageTile = document.getElementById("mainImageTileImageId");
+						var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+
+						//added by Mike, 20231129
+						var bossBattleBgImage = document.getElementById("bossBattleBgImageId");			
+
+						//added by Mike, 20231129
+						var bossBattleBgImagePart2 = document.getElementById("bossBattleBgImagePart2Id");		
+						var mainImageSoldier = document.getElementById("mainImageSoldierId");			
+												
+						mainImageSoldier.style.visibility = "hidden";
+						 
+						mainImageMonster.style.visibility = "hidden";
+						textScoreDivId.style.color="white";
+						myCanvasTwo.style.visibility="visible";
+												
+						mainImageTile.style.visibility = "visible";
+						mainImageTileTankBody.style.visibility = "visible";
+
+						
+						bossBattleBgImage.style.visibility = "visible";
+						bossBattleBgImagePart2.style.visibility = "visible";
+						
+						bossBattleBgImagePart2.style.left = 0+"px"; 
+						bossBattleBgImagePart2.style.top = 0+iStageMaxHeight-bossBattleBgImagePart2.clientHeight+"px";
+		
+						
+						//added by Mike, 20231129
+						//setCityExplosionEffectPosition(0,0);
+						//setCityExplosionEffectPosition(parseInt(bossBattleBgImage.style.left)+bossBattleBgImage.clientWidth*0.3,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/2);
+						
+						setCityExplosionEffectPosition(parseInt(bossBattleBgImage.style.left)+bossBattleBgImage.clientWidth*0.1,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/3);
+
+						//setCityExplosionEffectPosition(0,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/5);
+	
+	
+					  }
+					}
+					
+				}
+				iTransitionDelayCount++;			
+			}
+		}
+		else {
+			if (iTransitionScale>0) {
+				iTransitionScale-=0.02;//0.01;
+/*				
+				if (bIsPuzzleDone) {
+					alert("scaling..."+iTransitionScale);
+				}
+*/				
+			}
+			else {
+			
+				iTransitionScale=0;
+				iTransitionRotate=0;
+
+				if (iTransitionDelayCount<iTransitionDelayCountMax) {
+				}
+				else {
+					myDivTransitionEffect.style.visibility="hidden";
+					bIsExecutingTransition=false;
+					
+					//alert("DITO!!!");
+				}
+				iTransitionDelayCount++;			
+			}
+			
+		}
+		
+	////	myDivTransitionEffect.style.transform = "rotate("+iTransitionRotate+"deg)";
+		
+	////	myDivTransitionEffect.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";
+
+		myDivTransitionEffect.style.transform = "rotate("+iTransitionRotate+"deg)"+" scale("+iTransitionScale+","+iTransitionScale+")";	
+	}
+	
+	function myUpdateFunction() {
+//    alert(window.getfullscreen());
+
+/*
+    //alert(window.getfullscreen);
+    if (window.getfullscreen!=undefined) {
+      alert(window.getfullscreen);
+    }
+*/
+   //alert(screen.width);
+/*
+   if (screen.width!==1280) {
+     alert(screen.width);
+   }
+*/
+
+/*iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+*/
+//iHorizontalOffset=0;
+
+
+		var mainImageTile = document.getElementById("mainImageTileImageId");
+
+		//added by Mike, 20231124
+		var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+
+		//added by Mike, 20230427
+		var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+		
+		//added by Mike, 20231128
+		var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
+
+
+    //added by Mike, 20231125
+    var mainImageMonsterBoss = document.getElementById("mainImageMonsterBoss");
+    var mainImageMonster = document.getElementById("mainImageMonster0");
+
+	//added by Mike, 20231129
+	 var mainImageSoldier = document.getElementById("mainImageSoldierId");
+
+
+    	//added by Mike, 20231124
+    	var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+		//added by Mike, 20231111
+		var puzzleTileImageSpaceBorder = document.getElementById("divPuzzleTileImageSpaceBorderId");
+
+		var textStatusDiv = document.getElementById("textStatusDivId");
+		var textStatusBackgroundDiv = document.getElementById("textStatusBackgroundDivId");
+
+		var textEnterDiv = document.getElementById("textEnterDivId");
+
+		//added by Mike, 20231119
+		var explosionEffectImage = document.getElementById("explosionEffectImageId");
+    //added by Mike, 20231126
+    var explosionEffectToMonsterImage = document.getElementById("explosionEffectToMonsterImageId");
+
+
+		//added by Mike, 20231121
+		var mouseInputImage = document.getElementById("mouseInputImageId");
+
+		//added by Mike, 20231121
+		var titleImage = document.getElementById("titleImageId");
+		//titleImage.style.visibility="hidden";
+
+		//added by Mike, 20231122
+		var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");
+
+		//added by Mike, 20231129
+		var howToPlayGuideImageFrame2 = document.getElementById("howToPlayGuideImageFrame2Id");
+
+
+		//added by Mike, 20231123
+//		if (iScore<iTargetScore) {
+    //edited by Mike, 20231124
+    if (bIsIncreasingScore) {
+  		if (iScore<(iTargetScore-77)) {
+  			iScore+=77;
+  		}
+  		else {
+  			iScore=iTargetScore;
+  		}
+    }
+    else {
+/*
+      alert("iScore: "+iScore);
+      alert("iTargetScore: "+iTargetScore);
+*/
+      if (iScore>(iTargetScore+77)) {
+  			iScore-=77;
+  		}
+  		else {
+  			iScore=iTargetScore;
+  		}
+    }
+
+		if (iScore>999999) {
+			iScore=999999;
+		}
+    else if (iScore<=0) {
+      //END; BATTLE FAIL
+      iScore=0;
+    }
+
+		var textScoreDiv = document.getElementById("textScoreDivId");
+
+		//note: correct sequence to cause correct OUTPUT
+		textScoreDiv.innerHTML = iScore;
+
+//		var iTextScoreDivWidthOffset=5;
+		iTextScoreDivWidth = (textScoreDiv.clientWidth)+iTextScoreDivWidthOffset;
+
+		//added by Mike, 20231125
+		var textScoreShadowDiv = document.getElementById("textScoreShadowDivId");
+		textScoreShadowDiv.innerHTML = iScore;
+
+		//textScoreShadowDiv.style.left = textScoreDiv.style.left;
+		textScoreShadowDiv.style.left = parseInt(textScoreDiv.style.left)+iTextScoreShadowDivWidthOffset +"px";
+
+/*
+		//var setAnimImageFrameXButton = document.getElementById("buttonSetAnimImageFrameXId");
+		var setPanelTable = document.getElementById("tableSetPanelId");
+
+		var setAnimImageFrameWidthText = document.getElementById("textSetAnimImageFrameWidthId");
+		var setAnimImageFrameHeightText = document.getElementById("textSetAnimImageFrameHeightId");
+
+		//added by Mike, 20230315
+		var animDirectionSelectedIndex = document.getElementById("selectAnimDirectionId").selectedIndex;
+*/
+
+    //added by Mike, 20230313
+    //reference: https://www.w3schools.com/tags/canvas_fillrect.asp;
+    //last accessed: 2020911
+    var myCanvas = document.getElementById("myCanvasId");
+    var myCanvasContext = myCanvas.getContext("2d");
+    //myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight)
+
+    myCanvasContext.fillStyle = "#f3f3f3"; //"#f9f9f9"; //"#f3f3f3"; //"#ffffff"; //white background//stage
+    myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+
+	//added by Mike, 20231127
+/*	
+	myCanvasContext.beginPath();
+	myCanvasContext.lineWidth = "6";
+	myCanvasContext.strokeStyle = "#ffffff";
+	myCanvasContext.rect(0, 0, 1, 1);
+	myCanvasContext.stroke();
+*/
+/*
+	for (iCurrSnowFlakeCount=0; iCurrSnowFlakeCount<iCurrSnowFlakeCountMax; iCurrSnowFlakeCount++) {
+////		var iCurrSnowFlakeCountPosX=0;
+////		var iCurrSnowFlakeCountPosY=0;
+
+		iCurrSnowFlakeCountPosX=window.parseInt(Math.random() * iStageMaxWidth)%iStageMaxWidth;
+
+		iCurrSnowFlakeCountPosY=window.parseInt(Math.random() * iStageMaxHeight)%iStageMaxHeight;
+
+		myCanvasContext.beginPath();
+		myCanvasContext.lineWidth = "3";
+		myCanvasContext.strokeStyle = "#ffffff";
+		myCanvasContext.rect(iCurrSnowFlakeCountPosX, iCurrSnowFlakeCountPosY, 1, 1);
+		myCanvasContext.stroke();
+	}
+*/	
+	
+    //added by Mike, 20231126
+    var myCanvasTwo = document.getElementById("myCanvasTwoId");
+    var myCanvasTwoContext = myCanvasTwo.getContext("2d");
+    //myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight)
+
+    //edited by Mike, 20231126
+    //myCanvasTwoContext.fillStyle = "#000000"; //"#ffffff"; //white background//stage
+
+    //reference#1: https://www.w3schools.com/jsref/canvas_createlineargradient.asp;
+    //last accessed: 20231126
+    //reference#2: https://www.tumblr.com/yes-asil; last accessed: 20231126
+
+    // Create a Gradient
+//    const grd = myCanvasTwoContext.createLinearGradient(0, 60, 0, 170);
+    const grd = myCanvasTwoContext.createLinearGradient(0, 20, 0, 170);
+
+/*
+    grd.addColorStop(0, "black");
+    grd.addColorStop(1, "white");
+*/
+/*
+    grd.addColorStop(0, "black");
+    grd.addColorStop(1, "#000055"); //dark blue
+*/
+/*  //blue green
+    grd.addColorStop(0, "#002255");
+    grd.addColorStop(1, "#00aadd");
+*/
+  grd.addColorStop(0, "#002244");
+  grd.addColorStop(1, "#00aacc");
+
+    // Draw a filled Rectangle
+    myCanvasTwoContext.fillStyle = grd;
+
+    //note: max is 150 for height?...
+    myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, 120);//iStageMaxHeight/2);
+
+    //TODO: -verify: this
+    //myCanvasTwoContext.rotate(20 * Math.PI / 180);
+
+/*	//removed by Mike, 20231127
+	var myCanvasSnowEffect = document.getElementById("myCanvasSnowEffectId");
+    var myCanvasContextSnowEffect = myCanvas.getContext("2d");
+    //myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight)
+
+    myCanvasContextSnowEffect.fillStyle = "#000000"; //black    
+	myCanvasContextSnowEffect.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+	
+
+	for (iCurrSnowFlakeCount=0; iCurrSnowFlakeCount<iCurrSnowFlakeCountMax; iCurrSnowFlakeCount++) {
+		
+////		var iCurrSnowFlakeCountPosX=0;
+////		var iCurrSnowFlakeCountPosY=0;
+
+		iCurrSnowFlakeCountPosX=window.parseInt(Math.random() * iStageMaxWidth)%iStageMaxWidth;
+
+		iCurrSnowFlakeCountPosY=window.parseInt(Math.random() * iStageMaxHeight)%iStageMaxHeight;
+
+		myCanvasContextSnowEffect.beginPath();
+		myCanvasContextSnowEffect.lineWidth = "3";
+		myCanvasContextSnowEffect.strokeStyle = "#000000"; //"#ffffff";
+		myCanvasContextSnowEffect.rect(iCurrSnowFlakeCountPosX, iCurrSnowFlakeCountPosY, 1, 1);
+		myCanvasContextSnowEffect.stroke();
+	}
+	
+	myCanvasSnowEffect.style.visibility="visibility";
+*/
+	
+	//iCurrSnowFlakeCountMax
+	for (iCurrSnowFlakeCount=0; iCurrSnowFlakeCount<10; iCurrSnowFlakeCount++) {
+	
+		var myDivSnowEffect = document.getElementById("divSnowEffectId"+iCurrSnowFlakeCount);
+	
+/*		
+		var iCurrSnowFlakeCountPosX=0;
+		var iCurrSnowFlakeCountPosY=0;
+*/
+		iCurrSnowFlakeCountPosX=window.parseInt(Math.random() * iStageMaxWidth)%iStageMaxWidth;
+
+		iCurrSnowFlakeCountPosY=window.parseInt(Math.random() * iStageMaxHeight)%iStageMaxHeight;
+
+		myDivSnowEffect.style.left=iCurrSnowFlakeCountPosX+iHorizontalOffset+"px";
+		myDivSnowEffect.style.top=iCurrSnowFlakeCountPosY+iVerticalOffsetInnerScreen+"px";	
+
+		myDivSnowEffect.style.visibility="visibility";		
+	}
+	
+	//added by Mike, 20231128
+	bossBattleBgImage.style.left=0+iHorizontalOffset+"px";
+	bossBattleBgImage.style.top=0+iVerticalOffsetInnerScreen+iStageMaxHeight*0.2+"px";	
+
+	
+/* //edited by Mike, 20231125
+    if (!bHasClosedPuzzle) {
+		//myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+
+		//myCanvasContext.fillStyle = "#000000"; //black; //"#ababab"; //"rgb(128,89,27)"; //"#604122"; //"blue";
+
+			//myCanvasContext.fillStyle = "#c5c5c5"; //gray
+			//edited by Mike, 20231119; from 20231116
+			myCanvasContext.fillStyle = "#ffffff"; //white background//stage
+			//myCanvasContext.fillStyle = "#8dff6e"; //light green background//stage
+
+			//myCanvasContext.fillStyle = "#1c640b"; //dark green background//stage
+
+			myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+		}
+    else {
+      myCanvasContext.fillStyle = "#000000"; //black background//stage
+			myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+    }
+*/
+
+//added by Mike, 20231105
+
+/*
+	//added by Mike, 20230106
+	if ((!bIsMobile) || (bIsUsingAppleMac)) {
+//	if (!bIsMobile) {
+	}
+	else {
+		if (!bHasSetMaxWidthHeight) {
+			iStageMaxWidth=iStageMaxWidth/2;
+			iStageMaxHeight=iStageMaxHeight/2;
+
+			iTitleImageWidth = iTitleImageWidth/2;
+			iTitleImageHeight = iTitleImageHeight/2;
+
+	//	alert(myCanvas.style.width);
+			myCanvas.style.width = iDefaultCanvasWidth/2 +"px"; //"300px";
+			myCanvas.style.height = iDefaultCanvasHeight/2 +"px";
+
+			bHasSetMaxWidthHeight=true;
+		}
+	}
+*/
+
+/*
+	var iControllerGuideImageWidth = (controllerGuideImage.clientWidth);
+	var iControllerGuideImageHeight = (controllerGuideImage.clientHeight);
+
+	//added by Mike, 20230115
+	var iStepCountGuideImageWidth = (stepCountGuideImage.clientWidth);
+	var iStepCountGuideImageHeight = (stepCountGuideImage.clientHeight);
+*/
+
+
+
+//alert (iHorizontalOffset);
+
+/* //edited by Mike, 20231111
+		//added by Mike, 20221002; edited by Mike, 20221005
+		//myCanvas.style.top = (0)+"px"; //iVerticalOffset+
+		myCanvas.style.top = (iVerticalOffsetInnerScreen+0)+"px"; //iVerticalOffset+
+
+		//added by Mike, 20221012
+		iHorizontalOffset=myCanvas.getBoundingClientRect().x;
+*/
+
+
+	executeExplosionEffect();
+
+  //added by Mike 20231126
+  executeExplosionEffectToMonsterBoss();
+  
+  //added by Mike, 20231129
+  executeExplosionEffectToCity();
+  
+
+/*	//removed by Mike, 20231121
+	//added by Mike, 20231121
+	executeMouseClickAnimation();
+*/
+
+/*
+	//removed by Mike, 20231120; from 20231119
+	//TODO: -update: this; reduce size of explosion effect image;
+	//explosionEffectImage.style.visibility="visible";
+
+	explosionEffectImage.style.left = 0+"px";
+	//iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount+"px";
+
+	explosionEffectImage.style.top = 0+"px";
+	//0+iOffsetHeight+iPuzzleTileHeight*iRowCount+iBorderOffset*iRowCount+"px";
+
+
+	if (iExplosionEffectAnimationDelayCount==iExplosionEffectAnimationDelayCountMax) {
+//	if (iExplosionEffectAnimationDelayCount>=iExplosionEffectAnimationDelayCountMax) {
+		iExplosionEffectAnimationCount=(iExplosionEffectAnimationCount+1)%5; //last hidden
+
+		iExplosionEffectAnimationDelayCount=0;
+		explosionEffectImage.style.visibility="visible";
+	}
+	else {
+		iExplosionEffectAnimationDelayCount++;
+
+//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+
+	}
+
+	if (iExplosionEffectAnimationCount==0) { //%2
+		explosionEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+	}
+	else if (iExplosionEffectAnimationCount==1) {
+		explosionEffectImage.style.objectPosition = "-" + 128 + "px -" + 0 + "px";
+		//alert(">>>>");
+	}
+	else if (iExplosionEffectAnimationCount==2) {
+		explosionEffectImage.style.objectPosition = "-" + 128*2 + "px -" + 0 + "px";
+		//alert(">>>>");
+	}
+	else if (iExplosionEffectAnimationCount==3) {
+		explosionEffectImage.style.objectPosition = "-" + 128*3 + "px -" + 0 + "px";
+		//alert(">>>>");
+	}
+	else {
+		explosionEffectImage.style.visibility="hidden";
+	}
+*/
+
+/*
+//alert("iExplosionEffectAnimationDelayCount: "+iExplosionEffectAnimationDelayCount);
+
+	if (iExplosionEffectAnimationDelayCount==iExplosionEffectAnimationDelayCountMax*20) {
+
+//		alert(iExplosionEffectAnimationDelayCount);
+		iExplosionEffectAnimationCount=0;
+		iExplosionEffectAnimationDelayCount=0;
+
+		explosionEffectImage.style.visibility="visible";
+	}
+*/
+
+
+	if (bIsExecutingShake) {
+		iShakeOffsetWidth=iShakeOffsetWidthMax;
+		iShakeOffsetHeight=iShakeOffsetHeightMax;
+
+		//alert("dito");
+
+		if (iDestroyHumanShakeDelayCount==iDestroyHumanShakeDelayMax) {
+			//myKeysDown[KEY_K] = FALSE;
+    		bIsExecutingShake = false;
+    		iDestroyHumanShakeDelayCount=0;
+    	}
+    	else {
+				iDestroyHumanShakeDelayCount+=1;
+    	}
+	}
+	else {
+  			iShakeOffsetWidth=0;
+			iShakeOffsetHeight=0;
+	}
+
+
+	myCanvas.style.top = (iVerticalOffsetInnerScreen+0)+iShakeOffsetHeight+"px";
+/*
+  if (bIsStillUsingItchScreen) {
+    iHorizontalOffset=0;
+    myCanvas.style.left=iHorizontalOffset+"px";
+  }
+  else {
+    iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+    myCanvas.style.left=iHorizontalOffset+"px";
+  }
+*/
+
+  iHorizontalOffset=myCanvas.getBoundingClientRect().x+iShakeOffsetWidth;
+
+
+/*  //removed by Mike, 20231126; itch.io
+  //edited by Mike, 20231126
+  //iHorizontalOffset=myCanvas.getBoundingClientRect().x+iShakeOffsetWidth;
+  //note: for INNER SCREEN
+	iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2+iShakeOffsetWidth;
+  myCanvas.style.left = iHorizontalOffset+"px";
+*/
+//  myCanvas.style.left = iHorizontalOffset+"px";
+
+  //added by Mike, 20231126
+  myCanvasTwo.style.top = myCanvas.style.top;
+  myCanvasTwo.style.left = myCanvas.style.left;
+
+
+		textScoreDiv.style.left = iHorizontalOffset+iStageMaxWidth-iTextScoreDivWidth+"px";
+		textScoreDiv.style.top= (0)+"px";
+
+
+
+ //removed by Mike, 20230424
+		//edited by Mike, 20230423; from 20230321
+		mainImageTile.style.clip = "rect(0px "+iImageFrameWidth+"px "+iImageFrameHeight+"px 0px)";
+
+		//added by Mike, 20230427
+//		mainImageTileProjectile.style.clip = "rect("+iImageFrameWidth*2+"px "+iImageFrameWidth+"px "+iImageFrameHeight+"px "+iImageFrameWidth*2+"px)";
+
+		mainImageTileProjectile.style.clip = "rect(0px "+iImageFrameWidth+"px "+iImageFrameHeight+"px 0px)";
+
+//reference: https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin; last accessed: 20230424
+//note: transform rotate uses whole unclipped image size; 256x256px
+//25%/2 = 12.5%
+mainImageTile.style.transformOrigin = "12.5% 12.5%";
+
+
+
+//clockwise
+//iMainImageTileStepAngle=(iMainImageTileStepAngle+1)%360;
+//counter-clockwise
+//iMainImageTileStepAngle=(iMainImageTileStepAngle-1)%360;
+
+/*
+//removed by Mike, 20230428;
+//use mouse position to identify angle
+//edited by Mike, 20230427
+if (!bHasFired) {
+//clockwise
+iMainImageTileStepAngle=(iMainImageTileStepAngle+1)%360;
+
+					mainImageTile.style.transform = "rotate("+ (iMainImageTileStepAngle % 360) +"deg)";
+}
+*/
+
+//mainImageTile.style.transform = "rotate("+ (fMainImageTileStepAngleDegrees % 360) +"deg)";
+
+
+
+/*
+iMainImageTileStepAngle+=5;
+
+	var fMainImageTileStepAngleRad=iMainImageTileStepAngle*Math.PI/180.0;
+
+mainImageTile.style.transform = "rotate("+ (iMainImageTileStepAngle % 360) +"deg)";
+
+
+
+mainImageTileStepX=15; //2;
+					mainImageTileStepY=15; //2;
+
+					//note: negative; due to inverted y-axis
+					//newMainImageTilePosY=mainImageTileStepX/Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+				newMainImageTilePosY=mainImageTileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+//					alert(newMainImageTilePosY);
+					newMainImageTilePosY*=-1;
+
+
+					//newMainImageTilePosX=mainImageTileStepY/Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+										newMainImageTilePosX=mainImageTileStepX*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+
+
+							mainImageTilePosY=mainImageTilePosY+newMainImageTilePosY;
+					mainImageTilePosX=mainImageTilePosX+newMainImageTilePosX;
+
+					//alert("mainImageTileStepX: "+mainImageTileStepX);
+					//alert("mainImageTilePosY Part1: "+mainImageTilePosY);
+		mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+		mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+		*/
+
+
+/*
+	textStatusDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTextStatusDivWidth/2 +"px";
+	textStatusDiv.style.top = 0+iStageMaxHeight-iTextStatusDivHeight*1.5+"px";
+*/
+
+		//added by Mike, 20231121
+		if (!bHasViewedTitle) {
+			titleImage.style.visibility="visible";
+			
+			mainImageMonster.style.visibility = "visible";
+
+			//added by Mike, 20231121
+			executeMouseClickAnimation();
+			
+			//added by Mike, 20231128
+			explosionEffectImage = document.getElementById("explosionEffectToMonsterImageId");
+	
+			//added by Mike, 20231129
+			explosionEffectToCityImage = document.getElementById("explosionEffectToCityImageId");	
+	
+/*	
+			//textEnterDiv.innerHTML = "START";
+			//textEnterDiv.innerHTML = "<font color='red'>START</font>";
+
+			if (iTransitionScale<1) {
+				iTransitionScale+=0.2
+			}
+			else if (iTransitionScale>0) {
+				iTransitionScale-=0.2
+			}
+
+			textEnterDiv.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";	
+*/	
+			executeEnterClickAnimation();
+			
+			//alert(iMonsterExplosionEffectAnimationDelayCount);
+/*			
+			if (iMonsterExplosionEffectAnimationDelayCount>=iMonsterExplosionEffectAnimationDelayCountMax) {
+			}
+			else {
+*/
+if (explosionEffectImage.style.visibility=="hidden") {
+	if (iTitleExplosionEffectDelayCount<iTitleExplosionEffectDelayCountMax) {				
+		iTitleExplosionEffectDelayCount++;
+	}
+	else {	
+		//alert("HERE!!!: "+iTitleExplosionEffectDelayCount);
+		
+		var titleImage = document.getElementById("titleImageId");
+
+		var iTitleImageWidth = (titleImage.clientWidth);
+		var iTitleImageHeight = (titleImage.clientHeight);
+
+		//remove this; otherwise, error in output
+		//explosionEffectImage.style.visibility="visible";	
+		
+//		setMonsterExplosionEffectPosition(parseInt(titleImage.style.left)+iTitleImageWidth*0.15,parseInt(titleImage.style.top)+iTitleImageHeight/2);
+	
+		setMonsterExplosionEffectPosition(parseInt(titleImage.style.left)+iTitleImageWidth*0.15,parseInt(titleImage.style.top)+iTitleImageHeight/3);
+	
+		
+		iTitleExplosionEffectDelayCount=0;
+	}
+}
+
+			
+/* //removed by Mike, 20231121
+//TODO: -update: position; in TITLE SCREEN
+			//edited by Mike, 20231121
+			var iTextEnterDivWidth = (textEnterDiv.clientWidth);
+
+			var iTextEnterDivHeight = (textEnterDiv.clientHeight);
+
+			textEnterDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTextEnterDivWidth/2 +"px";
+
+//			textEnterDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth-iTextEnterDivWidth+"px";
+
+//			textEnterDiv.style.top = 0+iStageMaxHeight-iTextEnterDivHeight+"px";
+			textEnterDiv.style.top = 0+iStageMaxHeight-iTextEnterDivHeight*2+"px";
+
+			//alert ("textEnterDiv.style.left: "+textEnterDiv.style.left);
+			//alert ("textEnterDiv.style.top: "+textEnterDiv.style.top);
+
+			textEnterDiv.style.visibility="visible";
+*/
+		}
+
+		//added by Mike, 20231122; from 20231119
+//		if ((!bHasPressedStart)||(!bHasViewedHowToPlayGuide)) {
+		//added by Mike, 20231121
+//		if (!bHasPressedStart) {
+
+		if (bHasPressedStart) {
+			
+			titleImage.style.visibility="hidden";
+			bHasViewedTitle=true;
+
+			textEnterDiv.style.visibility="hidden";
+
+			
+			if (!bHasViewedHowToPlayGuide) {
+				//added by Mike, 20231122
+				//var mouseInputImage = document.getElementById("mouseInputImageId");
+
+				mouseInputImage.style.visibility="hidden";
+
+				howToPlayGuideImage.style.visibility = "visible";
+				
+				//added by Mike, 20231129
+				//howToPlayGuideImageFrame2.style.visibility = "visible";
+
+				if (ihowToPlayGuideImageFrame2DelayCount<ihowToPlayGuideImageFrame2DelayCountMax) {
+					ihowToPlayGuideImageFrame2DelayCount++;
+				}
+				else {
+					ihowToPlayGuideImageFrame2DelayCount=0;
+
+					if (howToPlayGuideImageFrame2.style.visibility == "visible") {
+						howToPlayGuideImageFrame2.style.visibility = "hidden";
+					}
+					else {
+						howToPlayGuideImageFrame2.style.visibility = "visible";
+					}
+				}
+				
+				var iHowToPlayGuideImageWidth = (howToPlayGuideImage.clientWidth);
+
+				var iHowToPlayGuideImageHeight = (howToPlayGuideImage.clientHeight);
+
+				howToPlayGuideImage.style.top = (iVerticalOffsetInnerScreen+0+iStageMaxHeight/2 -iHowToPlayGuideImageHeight/2)+"px";
+
+				howToPlayGuideImage.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iHowToPlayGuideImageWidth/2 +"px";
+
+				//added by Mike, 20231129
+				howToPlayGuideImageFrame2.style.top = howToPlayGuideImage.style.top;
+
+				howToPlayGuideImageFrame2.style.left = howToPlayGuideImage.style.left;
+				
+				return;
+
+/*
+				if (howToPlayGuideImage.style.visibility=="hidden") {
+					howToPlayGuideImage.style.visibility = "visible";
+				}
+				else {
+					howToPlayGuideImage.style.visibility = "hidden";
+				}
+*/
+			}
+			//added by Mike, 20231123
+			else {
+/*	//removed by Mike, 20231128			
+				textScoreDiv.style.visibility = "visible";
+				//added by Mike, 20231125
+				textScoreShadowDiv.style.visibility = "visible";
+*/
+				//removed by Mike, 20231127
+				//added by Mike, 20231126
+				//mainImageMonster.style.visibility = "visible";
+			}
+
+/*
+			titleImage.style.visibility="hidden";
+			bHasViewedTitle=true;
+
+			textEnterDiv.style.visibility="hidden";
+*/
+		}
+
+		//added by Mike, 20231127
+		executeTransitionEffect();
+/*
+		if (bIsExecutingTransition) {
+			return;
+		}
+*/
+
+		//added by Mike, 20231111
+		if (bIsActionKeyPressed) {
+/*
+			alert ("iTargetAtSpaceBlinkAnimationCount: "+iTargetAtSpaceBlinkAnimationCount);
+			alert ("iTargetAtSpaceBlinkAnimationCountMax: "+iTargetAtSpaceBlinkAnimationCountMax);
+*/
+			//alert ("modulo: "+iTargetAtSpaceBlinkAnimationCount%iTargetAtSpaceBlinkAnimationCountMax);
+
+			//added by Mike, 20231119
+			if (bIsPuzzleTileTargetHit) {
+				iTargetAtSpaceBlinkAnimationCount++;
+
+				//if (iTargetAtSpaceBlinkAnimationCount==iTargetAtSpaceBlinkAnimationCountMax) {
+				if ((iTargetAtSpaceBlinkAnimationCount%iTargetAtSpaceBlinkAnimationCountMax)==0) {
+
+					puzzleTileImageSpaceBorder.style.visibility = "visible";
+
+					if (iTargetAtSpaceBlinkAnimationCount==iTargetAtSpaceBlinkAnimationCountMax*5) {
+
+						bIsActionKeyPressed=false;
+						iTargetAtSpaceBlinkAnimationCount=0;
+						puzzleTileImageSpaceBorder.style.visibility = "hidden";
+					}
+				}
+				else {
+					puzzleTileImageSpaceBorder.style.visibility =   "hidden";
+					//iTargetAtSpaceBlinkAnimationCount++;
+				}
+			}
+		}
+
+
+
+/*	//removed by Mike, 20230425
+		mainImageTile.style.left = (iHorizontalOffset)+mainImageTilePosX+"px";
+		mainImageTile.style.top = (iVerticalOffsetInnerScreen)+mainImageTilePosY+"px";
+*/
+
+
+
+    //added by Mike, 20231105
+    //-----------------
+
+    	let iTileBgCount=0;
+
+    /* //edited by Mike, 20230111
+    	let iPuzzleTileWidth=32;
+    	let iPuzzleTileHeight=32;
+    */
+    /*	//removed by Mike, 20230123
+    	let iPuzzleTileWidth=64;
+    	let iPuzzleTileHeight=64;
+    */
+
+    /*	//removed by Mike, 20230123
+    	const iPuzzleTileTotalWidthMax=iPuzzleTileWidth*iColumnCountMax;
+    	const iPuzzleTileTotalHeightMax=iPuzzleTileHeight*iRowCountMax;
+
+    //	alert(iPuzzleTileWidth);
+    //	alert (iPuzzleTileTotalMaxWidth);
+
+    */
+
+    	//edited by Mike, 20230123
+    	iBorderOffset=0; //2;
+    	iOffsetWidth=iStageMaxWidth/2-iPuzzleTileTotalWidthMax/2;
+      iOffsetHeight=iStageMaxHeight/2-iPuzzleTileTotalHeightMax/2;
+
+    	//removed by Mike, 20221106
+    	//16=4*4
+    	//const iTileBgCountMax=iRowCountMax*iColumnCountMax;
+
+    	//added by Mike, 20221113
+    	var bHasExecutedTileExchange=false;
+
+
+/* //removed by Mike, 20231124
+    	//added by Mike, 20221119
+    	var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+    	//added by Mike, 20221121
+    	var puzzleTileImageSpaceBorder = document.getElementById("divPuzzleTileImageSpaceBorderId");
+*/
+
+
+    /* //removed by Mike, 20230129
+    	//added by Mike, 202221121
+    	var miniPuzzleTileImage = document.getElementById("miniPuzzleTileImageId");
+
+    	//added by Mike, 20221121
+    	//add mini puzzle tile image after auto-generating
+    	if (!bIsInitAutoGeneratePuzzleFromEnd) {
+    		miniPuzzleTileImage.style.visibility = "visible";
+    	}
+
+    	miniPuzzleTileImage.style.left = iHorizontalOffset+"px";
+    	miniPuzzleTileImage.style.top= (iStageMaxHeight-iMiniPuzzleHeight)+"px";
+    */
+/*
+    	//added by Mike, 20231112; from 20221124
+      var myAudio = document.getElementById("myAudioId");
+*/
+    	//edited by Mike, 20221127
+    	//iCurrentPuzzleStage=1;
+
+    //iCurrentPuzzleStage=1;
+    	//miniPuzzleTileImage
+
+    /* //removed by Mike, 20230710
+    	switch (iCurrentPuzzleStage) {
+    		case 0: //starting level
+    			if (myAudio.src!=getBaseURL()+sAudioPuzzleStage0) {
+    				if (myAudio.volume>0) {
+    					//edited by Mike, 20221125; from 20221124
+    					fMyAudioVolume-=0.2;
+    					if (fMyAudioVolume<0) {
+    						fMyAudioVolume=0;
+    					}
+
+    					myAudio.volume=fMyAudioVolume;
+    				}
+    				else {
+    					//alert("dito");
+    					myAudio.pause();
+    					myAudio.setAttribute("src", getBaseURL()+sAudioPuzzleStage0);
+
+    					//edited by Mike, 20221125
+    					//myAudio.volume=1.0;
+    					fMyAudioVolume=1.0;
+    					//myAudio.volume=1.0;
+    					myAudio.volume=fMyAudioVolume;
+
+    					//added by Mike, 20221129
+    					if (textEnterDiv.style.visibility=="hidden") {
+    						myAudio.play();
+    					}
+    				}
+    			}
+    			//added by Mike, 20221130
+    			else {
+    				fMyAudioVolume=1.0;
+    				myAudio.volume=fMyAudioVolume;
+    			}
+    			break;
+
+
+    		default: //END
+    			break;
+    	}
+    */
+
+
+/* //removed by Mike, 20231110; added to function for click/touch
+	bIsPuzzleDone = isAutoVerifiedPuzzleDone();
+
+	//alert(bIsPuzzleDone);
+
+	if (bIsPuzzleDone) {
+		alert("CONGRATULATIONS!");
+	}
+*/
+
+//    alert(iColumnCount);
+
+    //----------
+
+		//edited by Mike, 20231121
+		if (bHasPressedStart) {
+		//arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+
+			//edited by Mike, 20221113; 20221112
+			autoUpdatePuzzleTileImage();
+		}
+
+
+		//added by Mike, 20231111
+		if (bIsPuzzleDone) {
+/*			
+			//added by Mike, 20231127
+			
+//alert(">>>>");			
+			if (!bIsExecutingTransition) {
+//alert(">>>>>>>>2");			
+			resetTransitionEffect();
+//alert(">>>>>>>>>>>>>>3");			
+
+			}
+*/
+
+      //added by Mike, 20231124
+      if (bIsBossBattleDone) {
+
+  			//removed by Mike, 20231111
+  			//alert("CONGRATULATIONS!");
+
+  			//added by Mike, 20231111
+  			//var sText = "CONGRATULATIONS!";
+			//OK
+  			//var sText = "CONGRATULATIONS!<br/>HALLO!";
+//  			var sText = "MISSION COMPLETE!<br/><br/>COMPLETION TIME:";
+
+  			//var sText = "The <font color='purple'>PEST</font> was destroyed.<br/>But not without heavy<br/> damage to the city.<br/>There is still a lot to learn<br/>and do. Thank you, and<br/> great work! Peace.";
+			
+			//var sText = "The <font color='#393da2'>PEST</font> was destroyed.<br/>But not without heavy<br/> damage to the city.<br/>There is still a lot to learn<br/>and do. Thank you, and<br/> great work! Peace.";
+
+			//var sText = "The <font color='#393da2'>CREATURE</font> was<br/> destroyed, but not without<br/> inflicting heavy damage<br/> to the city...We still have<br/> a lot to learn, and also to do.<br/> Thank you, and great work! Peace.";
+
+			//edited by Mike, 20231130
+			var sText = "The <font color='#4a50d9'>PEST</font> was destroyed.<br/>But not without heavy<br/> damage to the city...<br/>There is still a lot to learn<br/>and do. Thank you, and<br/> great work! Peace.";
+						
+			//var sCurrText="";
+
+			//var textStatusBackgroundDiv = document.getElementById("textStatusBackgroundDivId");
+/*			
+  			textStatusBackgroundDiv.innerHTML = sText;
+		  	
+			var iTextStatusBackgroundDivWidth = (textStatusBackgroundDiv.clientWidth);
+  			var iTextStatusBackgroundDivHeight = textStatusBackgroundDiv.clientHeight);
+			
+			textStatusBackgroundDiv.innerHTML = "";
+			
+			textStatusBackgroundDiv.style.width=iTextStatusBackgroundDivWidth;
+			textStatusBackgroundDiv.style.height=iTextStatusBackgroundDivHeight;
+*/			
+			
+			
+			
+			iCurrTextCharacterCountMax=sText.length;
+			
+			//include last character
+//			if (iCurrTextCharacterCount<iCurrTextCharacterCountMax) {
+			if (iCurrTextCharacterCount<=iCurrTextCharacterCountMax) {
+				sCurrText=sText.substring(0,iCurrTextCharacterCount);
+			}
+			iCurrTextCharacterCount++;
+
+  			textStatusDiv.innerHTML = sCurrText;//sText;
+
+  			//alert(sText.length);
+  			var iTextStatusDivWidth = (textStatusDiv.clientWidth);
+  			var iTextStatusDivHeight = (textStatusDiv.clientHeight);
+			
+			//added by Mike, 20231128
+			var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+
+  			//TODO: -update: this
+  			//iOffsetWidth
+  			textStatusDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTextStatusDivWidth/2 +"px";
+
+  				//textStatusDiv.style.left = 0+iHorizontalOffset+iOffsetWidth+"px";
+
+  			//iOffsetHeight
+  			//textStatusDiv.style.top = 0+iStageMaxHeight-iTextStatusDivHeight*1.5+"px";
+  			//textStatusDiv.style.top = 0+"px";
+			textStatusDiv.style.top = 0+(iStageMaxHeight*0.10)+"px";
+  			
+  			textStatusDiv.style.visibility="visible";
+			//added by Mike, 20231128
+			mainImageTileProjectile.style.visibility="hidden";
+			
+			//added by Mike, 20231128
+			textStatusBackgroundDiv.style.top=textStatusDiv.style.top;
+			textStatusBackgroundDiv.style.left=0+iStageMaxWidth*0.15;//textStatusDiv.style.left;//0;
+			textStatusBackgroundDiv.style.visibility="visible";
+
+/*					textStatusBackgroundDiv.style.width=iStageMaxWidth*0.75;//23*16;//("The PEST was destroyed.").length;//textStatusDiv.style.width;
+			textStatusBackgroundDiv.style.height=iStageMaxHeight*0.6;//textStatusDiv.style.height;
+*/
+
+/*
+textStatusBackgroundDiv.style.width=iStageMaxWidth*0.75;//23*16;//("The PEST was destroyed.").length;//textStatusDiv.style.width;
+			textStatusBackgroundDiv.style.height=iStageMaxHeight*0.6;//textSt
+*/
+
+			textStatusBackgroundDiv.style.width=iStageMaxWidth*0.65;
+			textStatusBackgroundDiv.style.height=iStageMaxHeight*0.6;			
+	  }
+      else {
+	  		//added by Mike, 20231127
+			if (bIsExecutingTransition) {
+				return;
+			}
+
+/* //removed by Mike, 20231127			
+			//added by Mike, 20231125
+			textScoreDivId.style.color="white";
+			myCanvasTwo.style.visibility="visible";
+*/
+			
+			
+/*    //removed by Mike 20231125
+			var mainImageTile = document.getElementById("mainImageTileImageId");
+
+			var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+      //added by Mike, 20231125
+      var mainImageMonster = document.getElementById("mainImageMonster0");
+*/
+
+/*	  //removed by Mike, 20231127
+
+			if (!bHasClosedPuzzle) {
+				closePuzzle();
+			}
+*/
+			
+/* //removed by Mike, 20231126
+      var myCanvas = document.getElementById("myCanvasId");
+  		var myCanvasContext = myCanvas.getContext("2d");
+
+      //added by Mike, 20231125; from 20231124
+			myCanvasContext.fillStyle = "#000000"; //black background//stage
+			myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+*/
+
+/*		//removed by Mike, 20231127; to execute transition function
+			mainImageTile.style.visibility = "visible";
+			mainImageTileTankBody.style.visibility = "visible";
+*/
+
+			/*	//removed by Mike, 20231127; TODO: -add: this
+      //added by Mike, 20231125
+      if (mainImageMonster.style.visibility!="hidden") {
+        mainImageMonster.style.visibility = "visible";
+      }
+*/	  
+
+        mainImageMonsterBoss.style.visibility = "visible";
+
+/*	//edited by Mike, 20231129
+      if (mainImageMonsterBoss.style.visibility!="hidden") {
+        mainImageMonsterBoss.style.visibility = "visible";
+      }
+		
+	  //added by Mike, 20231129
+      if (mainImageSoldier.style.visibility!="hidden") {
+*/	  
+/*		
+      }
+*/
+
+/*	//removed by Mike, 20231125; TODO: -fix: at times, slow-moving projectile occurs
+	//added by Mike, 20231125
+	mainImageTileProjectileVelocityY+=1;//8;
+	mainImageTileProjectileVelocityX+=1;//8;
+*/
+
+	//alert("mainImageTileProjectileVelocityY: "+mainImageTileProjectileVelocityY);
+
+	if (mainImageTileProjectileStepY<mainImageTileProjectileStepYMax) {
+		mainImageTileProjectileStepY+=mainImageTileProjectileVelocityY;//++;
+	}
+
+	if (mainImageTileProjectileStepX<mainImageTileProjectileStepXMax) {
+		mainImageTileProjectileStepX+=mainImageTileProjectileVelocityX;//++;
+	}
+
+
+//-----------------------
+
+	//		mainImageTilePosX++;
+//		mainImageTilePosX--;
+//		mainImageTilePosY++;
+
+		//edited by Mike, 20230423; from 20230418
+		//autoIdentifyNextDirectionAI();
+		//autoIdentifyNextDirectionAIPart2Mouse();
+
+
+/*	//edited by Mike, 20231125
+		//edited by Mike, 20230421
+		mainImageTilePosX+=mainImageTileStepX; //horizontal movement;
+*/
+		if (arrayKeyPressed[iKEY_D]==true) {
+			mainImageTilePosX+=mainImageTileStepX; //horizontal movement;
+			arrayKeyPressed[iKEY_D]=false;
+		}
+		else if (arrayKeyPressed[iKEY_A]==true) {
+			mainImageTilePosX-=mainImageTileStepX; //horizontal movement;
+			arrayKeyPressed[iKEY_A]=false;
+		}
+
+/*
+		mainImageTilePosY+=mainImageTileStepY; //goes downward; vertical
+*/
+
+
+		//TO-DO: -add: function; AI; Artificial Intelligence
+		//combination of forward, diagonal movements
+
+		//STAGE; MAX
+		if (mainImageTilePosX+iImageFrameWidth>iStageMaxWidth) {
+			mainImageTilePosX=iStageMaxWidth-iImageFrameWidth;
+		}
+		else if (mainImageTilePosX<0) {
+			mainImageTilePosX=0;
+		}
+
+		if (mainImageTilePosY+iImageFrameHeight>iStageMaxHeight) {
+      //edited by Mike, 20231126
+			//mainImageTilePosY=iStageMaxHeight-iImageFrameHeight;
+      mainImageTilePosY=iStageMaxHeight-iImageFrameHeight-iImageFrameHeight*0.25;
+		}
+		else if (mainImageTilePosY<0) {
+			mainImageTilePosY=0;
+		}
+
+/* //removed by Mike, 20231128
+    //added by Mike, 20231126
+    mainImageMonsterBossPosY+=3;//2;//++;
+	iTransitionRotate=(iTransitionRotate+10)%360;
+	
+	//mainImageMonsterBoss.style.transform = "rotate("+iTransitionRotate+"deg)"+" scale("+iTransitionScale+","+iTransitionScale+")";	
+	mainImageMonsterBoss.style.transform = "rotate("+iTransitionRotate+"deg)";	
+	mainImageMonsterBoss.style.transformOrigin = "12.5% 12.5%"; //"50% 50%"; //
+*/
+	
+    if (mainImageMonsterBossPosY+iMonsterBossTileHeight>iStageMaxHeight) {
+			mainImageMonsterBossPosY=iStageMaxHeight-iMonsterBossTileHeight;
+
+/*			
+			//edited by Mike, 20231127
+			iScore=1;
+			iTargetScore=1;
+*/			
+			iTargetScore=1;
+			bIsIncreasingScore=false;
+		    //setMonsterExplosionEffectPosition(0+iHorizontalOffset+iStageMaxHeight-iMonsterBossTileWidth/2,mainImageMonsterBossPosY+iMonsterBossTileHeight/2);
+			
+			
+		    //note: error in output due to reuse of same animation count via function setMonsterExplosion...	//setMonsterExplosionEffectPosition(0+parseInt(textScoreShadowDiv.style.left),+parseInt(textScoreShadowDiv.style.top));
+			
+			//removed by Mike, 20231128
+			//bIsExecutingShake=true;	
+			//increase rotation speed;
+			//iTransitionRotate=(iTransitionRotate+10)%360;		
+
+			if (iScore==1) {
+				if (iMonsterBossAttackDelayCount<iMonsterBossAttackDelayCountMax) {
+					iMonsterBossAttackDelayCount++;
+				}
+				else {			
+					iTransitionRotate=(iTransitionRotate+30)%360;
+					mainImageMonsterBoss.style.transform = "rotate("+iTransitionRotate+"deg)";	
+					mainImageMonsterBoss.style.transformOrigin = "12.5% 12.5%"; 
+				}
+
+			
+			}			
+		}
+/*		
+		else if (mainImageMonsterBossPosY<0) {
+			mainImageMonsterBossPosY=0;			
+		}
+*/		
+		else {		
+			//added by Mike, 20231126
+			mainImageMonsterBossPosY+=3;//2;//++;
+			iTransitionRotate=(iTransitionRotate+10)%360;
+			
+			//mainImageMonsterBoss.style.transform = "rotate("+iTransitionRotate+"deg)"+" scale("+iTransitionScale+","+iTransitionScale+")";	
+			mainImageMonsterBoss.style.transform = "rotate("+iTransitionRotate+"deg)";	
+			mainImageMonsterBoss.style.transformOrigin = "12.5% 12.5%"; //"50% 50%"; //	
+			
+			//bIsExecutingShake=true;	
+		}
+		
+		//added by Mike, 20231129
+		var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
+		//setCityExplosionEffectPosition(parseInt(bossBattleBgImage.style.left)+bossBattleBgImage.clientWidth*0.3,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/2);
+
+		setCityExplosionEffectPosition(parseInt(bossBattleBgImage.style.left)+bossBattleBgImage.clientWidth*0.1,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/3);
+				
+				//setCityExplosionEffectPosition(0,parseInt(bossBattleBgImage.style.top)+bossBattleBgImage.clientHeight/5);
+
+				
+				//setCityExplosionEffectPosition(0,0);		
+
+    //ANIMATION;
+//    mainImageMonsterBoss.style.objectPosition = "-" + 128 + "px -" + 0 + "px";
+
+    //alert(iAnimationDelayCount);
+
+    if (iMonsterAnimationDelayCount==iMonsterAnimationDelayCountMax) {
+      iMonsterAnimationCount=(iMonsterAnimationCount+1)%2; //iAnimationCountMax
+      iMonsterAnimationDelayCount=0;
+    }
+    else {
+      iMonsterAnimationDelayCount++;
+      //bIsMonsterBossHit=false;
+    }
+
+    if (bIsMonsterBossHit) {
+      //alert(iAnimationCount);
+      mainImageMonsterBoss.style.objectPosition = "-" + 128*(iMonsterAnimationCount) + "px -" + 128 + "px";
+
+      if (iAnimationCount==1) {
+        bIsMonsterBossHit=false;
+        
+		//edited by Mike, 20231128
+		//iBossLife--;
+		if (iScore==1) {
+			iBossLife--;
+		}
+		
+/*
+alert("iMonsterBossTileWidth: "+iMonsterBossTileWidth);
+alert("iMonsterBossTileHeight: "+iMonsterBossTileHeight);
+*/
+//        setMonsterExplosionEffectPosition(parseInt(mainImageMonsterBoss.style.left)+iMonsterBossTileWidth/2,parseInt(mainImageMonsterBoss.style.top)+iMonsterBossTileHeight/2);
+//        setMonsterExplosionEffectPosition(parseInt(mainImageMonsterBoss.style.left)+32,parseInt(mainImageMonsterBoss.style.top)+32);
+
+		//edited by Mike, 20231128
+//		if (mainImageMonsterBoss.style.visibility!="hidden") {
+		if (!bIsBossBattleDone) {
+			setMonsterExplosionEffectPosition(parseInt(mainImageMonsterBoss.style.left)+iMonsterBossTileWidth/4,parseInt(mainImageMonsterBoss.style.top)+iMonsterBossTileHeight/4);
+		}
+
+        if (iBossLife<=0) {
+            //alert("MISSION COMPLETE!");
+			mainImageMonsterBoss.style.visibility="hidden";
+			bIsBossBattleDone=true;
+        }
+      }
+    }
+    else {
+      mainImageMonsterBoss.style.objectPosition = "-" + 128*(iMonsterAnimationCount) + "px -" + 0 + "px";
+    }
+
+/*
+		mainImageTile.style.left = parseInt(mainImageTile.style.left)+mainImageTilePosX+"px";
+		mainImageTile.style.top = parseInt(mainImageTile.style.top)+mainImageTilePosY+"px";
+*/
+/*		//edited by Mike, 20231125
+		mainImageTile.style.left = mainImageTilePosX+"px";
+		mainImageTile.style.top = mainImageTilePosY+"px";
+*/
+		mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+		mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+
+		//added by Mike, 20231125
+		mainImageTileTankBody.style.left = mainImageTile.style.left;
+		mainImageTileTankBody.style.top = mainImageTile.style.top;
+
+    mainImageMonster.style.left = (iHorizontalOffset+mainImageMonsterPosX)+"px";
+    mainImageMonster.style.top = (iVerticalOffsetInnerScreen+mainImageMonsterPosY)+"px";
+
+    mainImageMonsterBoss.style.left = (iHorizontalOffset+mainImageMonsterBossPosX)+"px";
+    mainImageMonsterBoss.style.top = (iVerticalOffsetInnerScreen+mainImageMonsterBossPosY)+"px";
+
+
+//-----------------------
+
+
+			//added by Mike, 20230427
+			//movement
+			if (bHasFired) {
+
+			  	mainImageTileProjectile.style.visibility = "visible";
+
+/*
+//alert("mainImageTileProjectilePosY: "+mainImageTileProjectilePosY);
+mainImageTileProjectilePosY=mainImageTileProjectilePosY+newMainImageTileProjectilePosY;
+//alert("newMainImageTileProjectilePosY: "+newMainImageTileProjectilePosY);
+					mainImageTileProjectilePosX=mainImageTileProjectilePosX+newMainImageTileProjectilePosX;
+*/
+
+mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTileProjectilePosY;
+
+					mainImageTileProjectilePosX=parseInt(mainImageTileProjectilePosX)+newMainImageTileProjectilePosX;
+
+
+/*
+mainImageTileProjectilePosY++;
+//alert("newMainImageTileProjectilePosY: "+newMainImageTileProjectilePosY);
+					mainImageTileProjectilePosX++;								*/
+					//alert("mainImageTileStepX: "+mainImageTileStepX);
+
+					//alert("mainImageTileProjectilePosY: "+mainImageTileProjectilePosY);
+
+/*
+		mainImageTileProjectile.style.left = (iHorizontalOffset)+mainImageTileProjectilePosX+"px";
+
+		mainImageTileProjectile.style.top = (iVerticalOffsetInnerScreen)+mainImageTileProjectilePosY+"px";
+*/
+		mainImageTileProjectile.style.left = mainImageTileProjectilePosX+"px";
+
+		mainImageTileProjectile.style.top = mainImageTileProjectilePosY+"px";
+
+
+//alert(iHorizontalOffset);
+//alert(iVerticalOffsetInnerScreen);
+
+/*
+		mainImageTileProjectile.style.left = (iHorizontalOffset+mainImageTilePosX)+mainImageTileProjectilePosX+"px";
+
+		mainImageTileProjectile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+mainImageTileProjectilePosY+"px";
+*/
+
+//STAGE; MAX
+//TO-DO: -fix: this
+
+//		if (mainImageTileProjectilePosX+iImageFrameWidth>iHorizontalOffset+iStageMaxWidth) {
+
+/*
+	//edited by Mike, 20231125; from 20230428; OK; inside stage border;
+		if (mainImageTileProjectilePosX+iImageFrameWidth>iStageMaxWidth) {
+//+iImageFrameWidth
+			resetProjectile();
+		}
+		else if (mainImageTileProjectilePosX<0){//+iHorizontalOffset) {
+				resetProjectile();
+		}
+*/
+
+    //added by Mike, 20231125
+/*
+    mainImageMonster.style.left = (iHorizontalOffset+mainImageMonsterPosX)+"px";
+    mainImageMonster.style.top = (iVerticalOffsetInnerScreen+mainImageMonsterPosY)+"px";
+*/
+
+/*
+    mainImageMonsterPosX=parseInt(mainImageMonster.style.left);
+    mainImageMonsterPosY=parseInt(mainImageMonster.style.top);
+*/
+
+//    if (isPointsOfRectIntersectingPointsOfRect(mainImageTileProjectilePosX,mainImageTileProjectilePosY, mainImageMonsterPosX,mainImageMonsterPosY)) {
+
+//-----------------
+
+    if (isPointsOfRectIntersectingPointsOfRect(mainImageTileProjectilePosX,mainImageTileProjectilePosY, parseInt(mainImageMonster.style.left),parseInt(mainImageMonster.style.top))) {
+//        alert("HIT!");
+      mainImageMonster.style.visibility="hidden";
+    }
+
+	//edited by Mike, 20231128
+	if (!bIsBossBattleDone) {
+		if (isPointsOfRectIntersectingPointsOfRect(mainImageTileProjectilePosX,mainImageTileProjectilePosY, parseInt(mainImageMonsterBoss.style.left),parseInt(mainImageMonsterBoss.style.top))) {
+	//        alert("HIT!");
+		  //mainImageMonsterBoss.style.visibility="hidden";
+		  //added by Mike, 20231126
+		  bIsMonsterBossHit=true;
+
+		  //added by Mike, 20231126
+		  resetProjectile();
+		}
+	}
+
+//-----------------
+
+
+		if (mainImageTileProjectilePosX+iImageFrameWidth>iStageMaxWidth+iHorizontalOffset) {
+//+iImageFrameWidth
+			resetProjectile();
+		}
+		else if (mainImageTileProjectilePosX<0+iHorizontalOffset){
+				resetProjectile();
+		}
+
+
+//		if (mainImageTileProjectilePosY+iImageFrameHeight>iVerticalOffset+iStageMaxHeight) {
+
+//		if (mainImageTileProjectilePosY+iImageFrameHeight>iStageMaxHeight) {
+//		if (mainImageTileProjectilePosY>iStageMaxHeight) { //+iImageFrameHeight
+
+		//edited by Mike, 20231125
+		if (mainImageTileProjectilePosY+iImageFrameHeight/2>iStageMaxHeight) {
+			resetProjectile();
+		}
+//		else if (mainImageTileProjectilePosY<0+iVerticalOffset) {
+		else if (mainImageTileProjectilePosY<0) {
+			resetProjectile();
+		}
+
+
+
+/* //outside stage border;
+		if (mainImageTileProjectilePosX>iStageMaxWidth) {
+			resetProjectile();
+		}
+		else
+		if (mainImageTileProjectilePosX+iImageFrameWidth<0) {
+				resetProjectile();
+		}
+
+		if (mainImageTileProjectilePosY>iStageMaxHeight) {
+			resetProjectile();
+		}
+		else if (mainImageTileProjectilePosY+iImageFrameHeight<0) {
+			resetProjectile();
+		}
+*/
+/*
+	  }
+*/
+//		mainImageTilePosX++;
+//		mainImageTilePosX--;
+//		mainImageTilePosY++;
+
+		//edited by Mike, 20230423; from 20230418
+		//autoIdentifyNextDirectionAI();
+		//autoIdentifyNextDirectionAIPart2Mouse();
+
+		//edited by Mike, 20230421
+/*
+		mainImageTilePosX+=mainImageTileStepX; //horizontal movement;
+		mainImageTilePosY+=mainImageTileStepY; //goes downward; vertical
+*/
+
+
+/* //removed by Mike, 20231125
+		//TO-DO: -add: function; AI; Artificial Intelligence
+		//combination of forward, diagonal movements
+
+		//STAGE; MAX
+		if (mainImageTilePosX+iImageFrameWidth>iStageMaxWidth) {
+			mainImageTilePosX=iStageMaxWidth-iImageFrameWidth;
+		}
+		else if (mainImageTilePosX<0) {
+			mainImageTilePosX=0;
+		}
+
+		if (mainImageTilePosY+iImageFrameHeight>iStageMaxHeight) {
+			mainImageTilePosY=iStageMaxHeight-iImageFrameHeight;
+		}
+		else if (mainImageTilePosY<0) {
+			mainImageTilePosY=0;
+		}
+*/
+
+		/* //removed by Mike, 20231121
+		//edited by Mike, 20230423; from 20230321;
+		mainImageTile.style.visibility = "visible";
+
+		//mainImageTile.style.visibility = "hidden";
+*/
+		//removed by Mike, 20230427
+		//mainImageTileProjectile.style.visibility = "visible";
+
+
+
+/*
+		setAnimImageFrameXButton.style.left = (iHorizontalOffset+iStageMaxWidth)+"px";
+		setAnimImageFrameXButton.style.top = (iVerticalOffsetInnerScreen)+"px"; //+iStageMaxHeight
+*/
+
+/* //removed by Mike, 20231125
+		//added by Mike, 20230428
+		mainImageTilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+
+		//edited by Mike, 20231124
+		//mainImageTilePosY=iStageMaxHeight/2-iImageFrameHeight/2;
+		mainImageTilePosY=iStageMaxHeight-iImageFrameHeight;
+*/
+
+/*	//removed by Mike, 20231125
+		mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+		mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+*/
+
+/*  //removed by Mike, 20231124
+		//added by Mike, 20231121
+		mainImageTile.style.visibility = "hidden";//"visible";
+*/
+
+/*
+		setPanelTable.style.left = (iHorizontalOffset+iStageMaxWidth)+"px";
+		setPanelTable.style.top = (iVerticalOffsetInnerScreen)+"px"; //+iStageMaxHeight
+*/
+
+			}
+
+		  }
+	  }
+	  else {
+/*
+		//added by Mike, 20231124
+	  	mainImageTile.style.visibility = "hidden";
+		mainImageTileProjectile.style.visibility = "hidden";
+*/
+      //added by Mike, 20231126
+      myCanvas.style.visibility="visible";
+	  
+      //added by Mike, 20231126
+      if (iMonsterAnimationDelayCount==iMonsterAnimationDelayCountMax) {
+        iMonsterAnimationCount=(iMonsterAnimationCount+1)%2; //iAnimationCountMax
+        iMonsterAnimationDelayCount=0;
+      }
+      else {
+        iMonsterAnimationDelayCount++;
+      }
+
+      //alert(iAnimationCount);
+      mainImageMonster.style.objectPosition = "-" + 64*(iMonsterAnimationCount) + "px -" + 0 + "px";
+
+	  
+	  if (bHasPressedStart) {
+	  	mainImageSoldier.style.visibility = "visible";
+		
+//		mainImageSoldier.style.objectPosition = "-" + 256 + "px -" + 0 + "px";
+/*
+		iSoldierAnimationScale=2.0;
+			
+		mainImageSoldier.style.transform = "scale("+iSoldierAnimationScale+","+iSoldierAnimationScale+")";			
+*/		
+/*
+		mainImageSoldier.style.left = 0+iStageMaxWidth-iImageFrameWidth*2+"px"; 
+		mainImageSoldier.style.top = (0+iStageMaxHeight-iImageFrameHeight*2)+"px";
+*/
+
+/*
+		mainImageSoldier.style.left = 0+iStageMaxWidth-iImageFrameWidth+"px"; 
+		mainImageSoldier.style.top = (0+iStageMaxHeight-iImageFrameHeight)+"px";
+*/
+		mainImageSoldier.style.left = 0+"px"; 
+		mainImageSoldier.style.top = 0+iStageMaxHeight-mainImageSoldier.clientHeight+"px";
+
+		//alert("DITO");
+		
+/*	
+//		mainImageSoldier.style.left = (0+iStageMaxWidth-iImageFrameWidth*2)+"px"; 
+		mainImageSoldier.style.left = 0+"px";//(0+iStageMaxWidth-iImageFrameWidth*2)+"px"; 
+	
+		mainImageSoldier.style.top = (0+iStageMaxHeight-iImageFrameHeight)+"px";
+*/			
+		
+
+			
+		//(0+iStageMaxWidth-mainImageSoldier.clientWidth)+"px";
+
+		//mainImageSoldier.style.top = (iVerticalOffsetInnerScreen+iStageMaxHeight-mainImageSoldier.clientHeight)+"px";
+
+		
+	  }
+
+    	//added by Mike, 20221124; removed by Mike, 20221124
+    	//iTileBgCount=0;
+
+    //	for (let iTileBgCount=0; iTileBgCount<16; iTileBgCount++) {
+    	for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+    		for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+
+    		//edited by Mike, 20221118
+    		//arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+    		arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+    		//added by Mike, 20221118
+    		//reference: https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_img_create;
+    		//last accessed: 20221118
+    		//edited by Mike, 20221121
+    //		arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+"assets/images/count1024x1024.png");
+
+/*
+    		//edited by Mike, 20221122; from 20221121
+    		//iCurrentPuzzleStage=1;
+    		switch (iCurrentPuzzleStage) {
+    			case 0: //starting level; numbers sequence
+    				//alert("dito");
+
+    				//edited by Mike, 20221124
+    			//arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+"assets/images/count1024x1024.png");
+
+    				if (arrayPuzzleTileCountId[iTileBgCount].src!=getBaseURL()+sImagePuzzleStage0) {
+
+    				    //edited by Mike, 20221127	//arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+"assets/images/count1024x1024.png");
+    					arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+sImagePuzzleStage0);
+    				}
+    				break;
+    			case 1: //next level; cambodia
+    				arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+sImagePuzzleStage1);
+    				break;
+    			case 2: //next level; duck army
+    				arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+sImagePuzzleStage2);
+    				break;
+    			default:
+    				iCurrentPuzzleStage=0;
+
+    				//repeat from starting level
+    				//edited by Mike, 20221124
+    			//arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+"assets/images/count1024x1024.png");
+    				if (arrayPuzzleTileCountId[iTileBgCount].src!=getBaseURL()+sImagePuzzleStage0) {
+    					//edited by Mike, 20221127
+    				//arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+"assets/images/count1024x1024.png");
+    arrayPuzzleTileCountId[iTileBgCount].setAttribute("src", getBaseURL()+sImagePuzzleStage0);
+
+    				}
+    				break;
+    		}
+        */
+
+    		//alert(iTileBgCount);
+
+        //alert(iBorderOffset);
+
+
+//    		arrayPuzzleTileCountId[iTileBgCount].style.left = iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount+"px";
+    		arrayPuzzleTileCountId[iTileBgCount].style.left = iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount+"px";
+
+    //		arrayPuzzleTileCountId[iTileBgCount].style.top = iVerticalOffset+iPuzzleTileHeight*iColumnCount+"px";
+    		arrayPuzzleTileCountId[iTileBgCount].style.top = 0+iOffsetHeight+iPuzzleTileHeight*iRowCount+iBorderOffset*iRowCount+"px";
+
+
+    //		alert (iPuzzleTileWidth*iRowCount);
+
+//added by Mike, 20231121; from 20231105
+
+    		//edited by Mike, 20221127	//arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+    		if (bHasPressedStart) {
+    			arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+    		}
+			else {
+    			arrayPuzzleTileCountId[iTileBgCount].style.visibility="hidden";
+			}
+
+        iTileBgCount++;
+      }
+    }
+
+	  }
+
+
+/*
+			//added by Mike, 20221125
+			if (myAudio.volume>0) {
+				fMyAudioVolume-=0.2;
+
+				if (fMyAudioVolume<0) {
+					fMyAudioVolume=0;
+				}
+
+				myAudio.volume=fMyAudioVolume;
+			}
+			else {
+				myAudio.pause();
+			}
+*/
+
+
+/*			//removed by Mike, 20231124
+
+			//reset
+			bIsActionKeyPressed=false;
+			iTargetAtSpaceBlinkAnimationCount=0;
+			puzzleTileImageSpaceBorder.style.visibility = "hidden";
+			puzzleTileImageTargetBorder.style.visibility = "hidden";
+*/
+
+
+/*	//removed by Mike, 20231115; TODO: -add: this
+			//next battle?
+			bIsPuzzleDone=false;
+*/
+
+/*	//removed by Mike, 20231124
+		}
+*/
+	}
+
+
+	//edited by Mike, 20231110; from 20231109
+	function hasCopy(iTileBgCountInput) {
+		var sInputTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountInput].alt;
+
+	    //edited by Mike, 20231108	//sInputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+		var sInputTileValue=sInputTileCountIdAltTemp.substring(0,sInputTileCountIdAltTemp.indexOf(",FK"));
+
+		//alert("sInputTileValue: "+sInputTileValue);
+
+		//note: "var" to create new container inside for loop
+		for (var iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+			for (var iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+				var iTileBgCountTemp=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+				//edited by Mike, 20231108
+	//sOutputTileValue=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+				var sOutputTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+			    //edited by Mike, 20231108				//sOutputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+				var sOutputTileValue=sOutputTileCountIdAltTemp.substring(0,sOutputTileCountIdAltTemp.indexOf(",FK"));
+
+
+
+				//alert("sOutputTileValue: "+sOutputTileValue);
+				//alert((Math.floor((sOutputTileValue-1)/4)));
+/*
+				alert("sInputTileValue: "+sInputTileValue);
+				alert((Math.floor((sInputTileValue-1)/4)));
+*/
+
+//				if (sInputTileValue!==sOutputTileValue) {
+					//4*4
+					//note: start from 0; so -1
+					//if in same row of input image file; has copy
+					if (Math.floor((parseInt(sInputTileValue-1))/4)===Math.floor((parseInt(sOutputTileValue-1))/4)) {
+						//AND not itself
+						//if (sInputTileValue!==sOutputTileValue) {
+						//if (!sInputTileValue.localeCompare(sOutputTileValue)) {
+
+						//alert (">> DITO");
+
+						if (parseInt(sInputTileValue)!=parseInt(sOutputTileValue)) {
+
+						//alert (">>>>>>");
+
+							//alert("has copy!");
+/*
+						alert("sInputTileValue: "+sInputTileValue);
+						alert("sOutputTileValue: "+sOutputTileValue);
+*/
+							//bHasCopy=true;
+							return true;
+						}
+
+//							return true;
+					}
+
+//				}
+
+
+
+
+			}
+		}
+
+		//alert("NO MORE COPY FOR THE TILE TYPE!");
+
+		return false;
+	}
+
+
+
+	//added by Mike, 20231106
+	function isUnique(iTileBgCountInput) {
+		//arrayPuzzleTileCountId[iTileBgCount].alt
+
+		//edited by Mike, 20231108
+		//sInputTileValue=arrayPuzzleTileCountId[iTileBgCountInput].alt;
+		//sOutputTileValue=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+		sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountInput].alt;
+
+	    //edited by Mike, 20231108	//sInputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+		sInputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(",FK"));
+
+		//alert("sInputTileValue: "+sInputTileValue);
+
+		for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+			for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) 		{
+				iTileBgCountTemp=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+				//edited by Mike, 20231108
+	//sOutputTileValue=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+				sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+			    //edited by Mike, 20231108				//sOutputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+				sOutputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(",FK"));
+
+
+				//alert("sOutputTileValue: "+sOutputTileValue);
+
+				if (arrayPuzzleTileCountId[iTileBgCountTemp].style.visibility== "hidden") {
+					continue;
+				}
+
+				/* //edited by Mike, 20231107
+				if (iTileBgCountInput!=iTileBgCountTemp) {
+					//unique?
+					if (sInputTileValue==sOutputTileValue) {
+						return false; //no
+					}
+				}
+				*/
+
+				//TODO: -add: if no more copies; update tile
+
+				//if not the same iTileBgCount
+				if (iTileBgCountInput!=iTileBgCountTemp) {
+					//unique?
+//					if (sInputTileValue==sOutputTileValue) {
+
+					//if not in the same row in tile.png; iTileBgCount
+					//4*4
+					//note: start from 0; so -1
+					//edited by Mike, 20231110
+/*
+					if (Math.floor((sInputTileValue-1)/4)==Math.floor((sOutputTileValue-1)/4)) {
+*/
+					if (Math.floor((parseInt(sInputTileValue-1)/4))==Math.floor((parseInt(sOutputTileValue-1)/4))) {
+
+						//alert(Math.floor((sOutputTileValue-1)/4));
+
+						return false; //no
+					}
+				}
+
+
+			}
+		}
+
+		return true;
+	}
+
+	//added by Mike, 20231108
+	//TODO: -update: this
+	function hasForeignKey(iTileBgCountInput) {
+		//alert("dito");
+
+		//arrayPuzzleTileCountId[iTileBgCount].alt
+
+		//edited by Mike, 20231108
+		//sInputTileValue=arrayPuzzleTileCountId[iTileBgCountInput].alt;
+		//sOutputTileValue=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+
+		sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountInput].alt;
+
+
+		//edited by Mike, 20231108	//sInputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+
+/*		//edited by Mike, 20231109
+		//sInputTileValue: ,FK=1
+		sInputTileValue=sTileCountIdAltTemp.substring(sTileCountIdAltTemp.indexOf(",FK="));
+
+		alert("sInputTileValue: "+sInputTileValue);
+*/
+
+		sInputTileValue=sTileCountIdAltTemp.substring(sTileCountIdAltTemp.indexOf(",FK=")+(",FK=").length);
+
+		//alert("sInputTileValue: "+sInputTileValue);
+
+		if (sInputTileValue.length>0) {
+			return true; //has foreign key
+		}
+
+		return false;
+
+/*	//removed by Mike, 20231109
+		for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+			for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) 		{
+				iTileBgCountTemp=arrayPuzzleTilePos[iRowCount][iColumnCount];
+*/
+
+				//edited by Mike, 20231108
+	//sOutputTileValue=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+	/*	//removed by Mike, 20231108
+				sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+
+				//edited by Mike, 20231108				//sOutputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(","));
+				sOutputTileValue=sTileCountIdAltTemp.substring(sTileCountIdAltTemp.indexOf(",FK="));
+
+				//alert("sOutputTileValue: "+sOutputTileValue);
+
+				if (arrayPuzzleTileCountId[iTileBgCountTemp].style.visibility== "hidden") {
+					continue;
+				}
+*/
+
+				/* //edited by Mike, 20231107
+				if (iTileBgCountInput!=iTileBgCountTemp) {
+					//unique?
+					if (sInputTileValue==sOutputTileValue) {
+						return false; //no
+					}
+				}
+				*/
+
+				//TODO: -add: if no more copies; update tile
+/*	//removed by Mike, 20231108
+				//if not the same iTileBgCount
+				if (iTileBgCountInput!=iTileBgCountTemp) {
+					//unique?
+//					if (sInputTileValue==sOutputTileValue) {
+					//if not in the same row in tile.png; iTileBgCount
+					//4*4
+					//note: start from 0; so -1
+					if (Math.floor((sInputTileValue-1)/4)==Math.floor((sOutputTileValue-1)/4)) {
+
+						//alert(Math.floor((sOutputTileValue-1)/4));
+
+						return false; //no
+					}
+				}
+*/
+/*	//removed by Mike, 20231109
+			}
+		}
+*/
+		return false;
+	}
+
+	//added by Mike, 20231123
+	function isTileTypeDone(sCurrHitTile) {
+		sCurrHitTileType=Math.floor((parseInt(sCurrHitTile)-1)/4);
+
+		//alert(">>>>sCurrHitTileType: "+sCurrHitTileType);
+
+		if (parseInt(sCurrHitTileType)==0) {
+			if (bSoldierTileTypeDone) {
+				return true;
+			}
+		}
+		else if (parseInt(sCurrHitTileType)==1) {
+			if (bTankTileTypeDone) {
+				return true;
+			}
+		}
+		else if (parseInt(sCurrHitTileType)==2) {
+			if (bBuildingTileTypeDone) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+  function processResultFromInput(iXPos, iYPos) {
+    if (!bIsPuzzleDone) {
+      processPuzzleResultFromInput(iXPos, iYPos);
+    }
+    else {
+      if (!bIsBossBattleDone) {
+        processBossBattleResultFromInput(iXPos, iYPos);
+      }
+    }
+  }
+
+	function processPuzzleResultFromInput(iXPos, iYPos) {
+
+					var mainImageTile = document.getElementById("mainImageTileImageId");
+
+
+          //TO-DO: -add: the following to verify if tile was clicked;
+  	//iTileBgCount=0;
+
+  	//added by Mike, 20230125
+  	//identify blank/empty tile
+  	var iTileBgCountOfEmptyTile=-1;
+
+  	//added by Mike, 20230522
+  	bIsActionKeyPressed=true;
+
+  	//added by Mike, 20230523
+  	bHasExecutedTileExchange=false;
+
+	//added by Mike, 20231113
+	var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+	var puzzleTileImageSpaceBorder = document.getElementById("divPuzzleTileImageSpaceBorderId");
+
+
+/* //removed by Mike, 20231111
+  	for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+  		for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) 		{
+
+  			//edited by Mike, 20230524
+  			iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+  //			iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount]+1;
+
+//alert(">>>"+iTileBgCount);
+
+  			if (arrayPuzzleTileCountId[iTileBgCount].alt=="") {
+  				iTileBgCountOfEmptyTile=iTileBgCount;
+  			}
+  		}
+  	}
+*/
+
+//alert("dito"+iTileBgCountOfEmptyTile);
+
+
+  	for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+  		for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+  			//edited by Mike, 20230524
+  			iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+  //			iTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount]-1;
+
+  		//alert(iTileBgCount);
+
+  /* //edited by Mike, 20230123
+  		var iTilePosX= arrayPuzzleTileCountId[iTileBgCount].style.left;
+  		var iTilePosY= arrayPuzzleTileCountId[iTileBgCount].style.Top;
+  */
+
+  	//edited by Mike, 20230524
+  		var iTilePosX= iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount;
+
+  		var iTilePosY=0+iOffsetHeight+iPuzzleTileHeight*iRowCount+iBorderOffset*iRowCount;
+
+
+  /*
+  		var iTilePosX= iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*(iColumnCount+1)+iBorderOffset*(iColumnCount+1);
+  		var iTilePosY=0+iOffsetHeight+iPuzzleTileHeight*(iRowCount+1)+iBorderOffset*(iRowCount+1);
+  */
+  		//added by Mike, 20230524
+  /*
+  		iXPos=iXPos+iPuzzleTileWidth/2;
+  		iYPos=iYPos+iPuzzleTileHeight/2;
+  */
+  		//alert("iXPos: "+iXPos+"; iTilePosX: "+iTilePosX);
+
+  				//iPuzzleTileWidth
+  //alert("iTilePosX: "+iTilePosX);
+
+  		//edited by Mike, 20230524
+  		if (isPointsOfRectIntersectingPointsOfRect(iXPos,iYPos,iTilePosX,iTilePosY)) {
+        //added by Mike, 20231105
+        //OK
+//        alert("HIT!");
+			bIsPuzzleTileTargetHit=true;
+
+      //added by Mike, 20231126
+      bIsIncreasingScore=true;
+
+			//removed by Mike, 20231120
+			//setExplosionEffectPosition(iTileBgCount);
+
+  			//OK; row1; columns; 1 to 4;
+  			//row2; columns 5 to 8;...
+/*
+  			alert("HIT! TILE COUNT: " + iTileBgCount);
+  			alert("arrayPuzzleTileCountId[iTileBgCount].alt: " + arrayPuzzleTileCountId[iTileBgCount].alt);
+*/
+
+/*//edited by Mike, 20231106
+  			//edited by Mike, 20230524
+  			if (arrayPuzzleTileCountId[iTileBgCount].alt=="") {
+  				return;
+  			}
+  			//OK; number value of Tile
+  			//alert (arrayPuzzleTileCountId[iTileBgCount].alt);
+  			//if NOT blank/empty tile
+  			//edited by Mike, 20230524
+  			//if (arrayPuzzleTileCountId[iTileBgCount].alt!="") {
+  			else if (arrayPuzzleTileCountId[iTileBgCount].alt!="") {
+*/
+		  if (1) {
+
+//         alert("dito"+arrayPuzzleTileCountId[iTileBgCount].alt);
+
+  /*
+  				alert("HIT! EXCHANGE! " + iTileBgCount);
+  				//exchange
+  				alert("EXCHANGE! EMPTY location: "+iTileBgCountOfEmptyTile);
+  */
+
+        var myAudioEffect = document.getElementById("myAudioEffectId");
+
+        myAudioEffect.setAttribute("src", sAudioEffectActionStart);
+
+        //fMyAudioEffectVolume=0.2;
+        fMyAudioEffectVolume=0.4;
+        myAudioEffect.volume=fMyAudioEffectVolume;
+        myAudioEffect.loop=false;
+        myAudioEffect.play();
+
+
+
+  /*				//edited by Mike, 20230524
+  				//added by Mike, 20230524
+  				//IF @TOP row
+  				if (iTileBgCountOfEmptyTile<4) {
+  				}
+  				//IF NOT @TOP row
+  				else {
+  					//TOP-LEFT; CENTER-5
+  					if (iTileBgCount==iTileBgCountOfEmptyTile-5) {
+  						alert("TOP-LEFT; CENTER-5");
+  						return;
+  					}
+  					//TOP-RIGHT; CENTER-3
+  					else if (iTileBgCount==iTileBgCountOfEmptyTile-3) {
+  						alert("TOP-RIGHT; CENTER-3");
+  						return;
+  					}
+  				}
+  */
+  /*
+  				//move only to TOP, BOTTOM, LEFT, RIGHT
+  				//from CENTER
+  				//IF @TOP row
+  				if (iTileBgCountOfEmptyTile<4) {
+  				alert(iTileBgCountOfEmptyTile);
+  					//TOP; CENTER-4
+  					if (iTileBgCount==iTileBgCountOfEmptyTile-4) {
+  						return;
+  					}
+
+  				}
+  */
+
+/* //removed by Mike, 20231105
+  				//move only to TOP, BOTTOM, LEFT, RIGHT
+  				//from CENTER
+  				//IF intends to move to LEFT
+  				if (iTileBgCount==iTileBgCountOfEmptyTile-1) {
+  					if (iColumnCount>-1) {
+  					}
+  					else {
+  						return;
+  					}
+  				}
+  				//IF intends to move to RIGHT
+  				else if (iTileBgCount==iTileBgCountOfEmptyTile+1) {
+  					if (iColumnCount<iColumnCountMax) {
+  					}
+  					else {
+  						return;
+  					}
+  				}
+  				//IF intends to move to TOP
+  				else if (iTileBgCount==iTileBgCountOfEmptyTile-4) {
+  					if (iRowCount>-1) {
+  					}
+  					else {
+  						return;
+  					}
+  				}
+  				//IF intends to move to BOTTOM
+  				else if (iTileBgCount==iTileBgCountOfEmptyTile+4) {
+  					if (iRowCount<iRowCountMax) {
+  					}
+  					else {
+  						return;
+  					}
+  				}
+  				else {
+  					return;
+  				}
+*/
+
+
+					//removed by Mike, 20231113; from 20231111
+/*
+					var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+					var puzzleTileImageSpaceBorder = document.getElementById("divPuzzleTileImageSpaceBorderId");
+*/
+					//edited by Mike, 20231119
+					puzzleTileImageTargetBorder.style.visibility = "visible";
+//					puzzleTileImageTargetBorder.style.visibility = "hidden";
+
+					puzzleTileImageSpaceBorder.style.visibility = "visible";
+//					puzzleTileImageSpaceBorder.style.visibility = "hidden";
+
+					//reminder: arrayPuzzleTileCountId[iTileBgCount].alt="";
+					puzzleTileImageTargetBorder.style.left = arrayPuzzleTileCountId[iTileBgCount].style.left;
+
+					puzzleTileImageTargetBorder.style.top = arrayPuzzleTileCountId[iTileBgCount].style.top;
+
+					puzzleTileImageSpaceBorder.style.left = arrayPuzzleTileCountId[iTileBgCount].style.left;
+
+					puzzleTileImageSpaceBorder.style.top = arrayPuzzleTileCountId[iTileBgCount].style.top;
+
+  				//alert("arrayPuzzleTileCountId[iTileBgCount].alt: " + arrayPuzzleTileCountId[iTileBgCount].alt);
+
+			//added by Mike, 20231122
+
+
+
+				sCurrHitTile=arrayPuzzleTileCountId[iTileBgCount].alt;
+				sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+				sCurrHitTileType="";
+
+
+			//OK; TODO: -add: tiles connected to target via FK
+			//TODO: -add: more output testings;
+			//added by Mike, 20231109
+			if (bHasHitTileWithForeignKey) {
+/*
+				alert("has hit tile with FK!");
+*/
+				//exchange with next tile hit if of same type
+
+/*	//removed by Mike, 20231123
+				sCurrHitTile=arrayPuzzleTileCountId[iTileBgCount].alt;
+				sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+				sCurrHitTileType="";
+*/
+
+				//edited by Mike, 20231113
+				//TODO: -verify: this
+				if (iPrevHitTileBgCount!=-1) {
+
+					sPrevHitTile=arrayPuzzleTileCountId[iPrevHitTileBgCount].alt;
+					sPrevHitTile=sPrevHitTile.substring(0,sPrevHitTile.indexOf(",FK="));
+				}
+				sPrevHitTileType="";
+/*
+				alert("sCurrHitTile: "+sCurrHitTile);
+				alert("sPrevHitTile: "+sPrevHitTile);
+*/
+				//4*4
+				//note: start from 0; so -1
+/*
+				//edited by Mike, 20231110
+				sCurrHitTileType=Math.floor((sCurrHitTile-1)/4)	;
+				sPrevHitTileType=Math.floor((sPrevHitTile-1)/4)	;
+*/
+
+/*	//edited by Mike, 20231123
+				sCurrHitTileType=Math.floor(parseInt((sCurrHitTile-1)/4));
+				sPrevHitTileType=Math.floor(parseInt((sPrevHitTile-1)/4));
+*/
+				sCurrHitTileType=Math.floor((parseInt(sCurrHitTile)-1)/4);
+				sPrevHitTileType=Math.floor((parseInt(sPrevHitTile)-1)/4);
+
+
+				/*
+				alert("sCurrHitTileType: "+sCurrHitTileType);
+				alert("sPrevHitTileType: "+sPrevHitTileType);
+*/
+
+				//if same type
+				if (sCurrHitTileType==sPrevHitTileType) {
+/*
+				alert("has hit SAME TILE!");
+*/
+
+					arrayPuzzleTileCountId[iTileBgCount].alt = arrayPuzzleTileCountId[iPrevHitTileBgCount].alt;
+
+					//edited by Mike, 20231113
+					//note: not an integer; blank
+//					iPrevHitTileBgCount="";//iTileBgCount;
+					iPrevHitTileBgCount=-1;//iTileBgCount;
+
+					bHasHitTileWithForeignKey=false;
+
+					//added by Mike, 20231111
+					puzzleTileImageTargetBorder.style.visibility = "hidden";
+					puzzleTileImageSpaceBorder.style.visibility = "hidden";
+
+					//added by Mike, 20231112
+					//if also the same tile
+					if (sCurrHitTile==sPrevHitTile) {
+						bIsExecutingShake=true;
+					}
+					//changed the target tile; effects; poof?
+					else {
+						//TODO: -update: this
+					}
+
+					//edited by Mike, 20231123; from 20231120
+					//setExplosionEffectPosition(iTileBgCount);
+					if (isTileTypeDone(sCurrHitTile)) {
+						return;
+					}
+/*
+					if (parseInt(sCurrHitTileType)==0) {
+						if (bSoldierTileTypeDone) {
+							return;
+						}
+					}
+					else if (parseInt(sCurrHitTileType)==1) {
+						if (bTankTileTypeDone) {
+							return;
+						}
+					}
+					else if (parseInt(sCurrHitTileType)==2) {
+						if (bBuildingTileTypeDone) {
+							return;
+						}
+					}
+*/
+
+					setExplosionEffectPosition(iTileBgCount);
+					
+					//added by Mike, 20231127
+					setMonsterExplosionEffectPosition(0+iHorizontalOffset,0+iVerticalOffsetInnerScreen);
+					
+
+					return;
+				}
+				//after already choosing a tile type;
+				else {
+					//alert("DIFFERENT TILE!");
+
+					//added by Mike, 20231114
+					var myAudioEffect = document.getElementById("myAudioEffectId");
+
+					myAudioEffect.setAttribute("src", sAudioEffectLowPower);
+
+					//fMyAudioEffectVolume=0.2;
+					fMyAudioEffectVolume=1.0;
+					myAudioEffect.volume=fMyAudioEffectVolume;
+					myAudioEffect.loop=false;
+					myAudioEffect.play();
+
+          //added by Mike, 20231124
+          bIsIncreasingScore=false;
+      		if (iTargetScore==iScore) {
+      			//iTargetScore=iScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1);//*777;
+      			iTargetScore=iScore-2500;
+
+      			//alert("iTargetScore: "+iTargetScore);
+      		}
+      		else {
+      /*
+      			alert("DITO");
+      			alert("iScore: "+iScore);
+      			alert("iTargetScore: "+iTargetScore);
+      */
+      			iScore=iTargetScore;
+      	//		iTargetScore=iTargetScore+iObjectCountForTileType*(parseInt(sCurrHitTileTypeInput)+1);//*777;
+      			iTargetScore=iTargetScore-2500;
+      		}
+
+
+					//edited by Mike, 20231113
+					//note: not an integer; blank
+					//iPrevHitTileBgCount="";//iTileBgCount;
+					iPrevHitTileBgCount=-1;//iTileBgCount;
+
+					bHasHitTileWithForeignKey=false;
+
+					//added by Mike, 20231114
+					iInputDelayCount=0;
+
+
+					//damage!
+					//TODO: -fix: if tile already is unique; not executed;
+					bIsExecutingShake=true;
+				}
+			}
+			//has no FK
+			else {
+				//alert("dito");
+				bIsExecutingShake=true;
+				//bIsActionKeyPressed=false;
+				//iPrevHitTileBgCount="";
+				sCurrHitTileType="";
+				sPrevHitTileType="";
+
+/*
+				return;
+*/
+			}
+
+
+			//added by Mike, 20231123
+			if (isTileTypeDone(sCurrHitTile)) {
+				//alert("DITO");
+
+				puzzleTileImageTargetBorder.style.visibility = "hidden";
+
+				return;
+			}
+
+
+			//added by Mike, 20231106
+			//arrayPuzzleTileCountId[iTileBgCount].alt
+			//alert("!!!");
+
+			if (isUnique(iTileBgCount)) {
+				//alert(">>>");
+
+				puzzleTileImageTargetBorder.style.visibility = "hidden";
+
+				return;
+			}
+
+			//added by Mike, 20231113
+			//TODO: -fix: multiple "...hasForeignKey(iTileBgCount)"
+			//edited by Mike, 20231109; from 20231108
+			if (hasForeignKey(iTileBgCount)) {
+				//alert("has foreign key!");
+
+				bHasHitTileWithForeignKey=true;
+				iPrevHitTileBgCount=iTileBgCount;
+
+				return;
+			}
+
+  /*				arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].alt=arrayPuzzleTileCountId[iTileBgCount].alt;
+
+  				arrayPuzzleTileCountId[iTileBgCount].alt="";
+  */
+  				//added by Mike, 20230522
+  				//-----
+  				bIsActionKeyPressed=true;
+
+
+
+          /*
+          arrayPuzzleTileCountId[iTileBgCount].className="Image32x32Tile";
+          				arrayPuzzleTileCountId[iTargetTileBgCount].className="Image32x32TileSpace";
+
+          arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].alt=arrayPuzzleTileCountId[iTileBgCount].alt;
+          */
+          /*
+          arrayPuzzleTileCountId[iTileBgCount].className="Image32x32Tile";
+          arrayPuzzleTileCountId[iTargetTileBgCount].className="Image32x32TileSpace";
+          */
+          //edited by Mike, 20230523
+
+/* //edited by Mike, 20231105; output; puts a red border on target;
+//if has: puzzleTileImageTargetBorder.style.visibility = "visible"
+//alert(iTileBgCountOfEmptyTile);
+
+          arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].className="Image32x32Tile";
+*/
+
+/* //edited by Mike, 20231106
+//added by Mike, 20231105
+iTileBgCountOfEmptyTile=iTileBgCount;
+//arrayPuzzleTileCountId[iTileBgCount].alt);
+arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].style.visibility = "hidden";
+*/
+
+//removed by Mike, 20231113; from 20231105
+//arrayPuzzleTileCountId[iTileBgCount].style.visibility = "hidden";
+
+
+//-----
+
+
+                    //alert("dito"+arrayPuzzleTileCountId[iTileBgCount].alt);
+
+		  //removed by Mike, 20231113
+          //var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+          //edited by Mike, 20231105
+          puzzleTileImageTargetBorder.style.visibility = "hidden";
+          //puzzleTileImageTargetBorder.style.visibility = "visible";
+          //-----
+
+//TODO: -add: new rules; delete immediately only if duplicate (with no "foreign key")
+
+
+          //reminder: arrayPuzzleTileCountId[iTileBgCount].alt="";
+		puzzleTileImageTargetBorder.style.left = arrayPuzzleTileCountId[iTileBgCount].style.left;
+
+		puzzleTileImageTargetBorder.style.top = arrayPuzzleTileCountId[iTileBgCount].style.top;
+
+
+          arrayPuzzleTileCountId[iTargetTileBgCount].className="Image32x32TileSpace";
+
+
+/* //removed by Mike, 20231106
+          //arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].alt=arrayPuzzleTileCountId[iTileBgCount].alt;
+
+          arrayPuzzleTileCountId[iTileBgCountOfEmptyTile].alt=arrayPuzzleTileCountId[iTileBgCount].alt;
+
+          //added by Mike, 20230523
+          //TO-DO: -add: NO DIAGONAL exchange;
+          iTargetTileBgCount=iTileBgCountOfEmptyTile;
+
+          				arrayPuzzleTileCountId[iTileBgCount].alt="";
+*/
+
+
+          //				alert("dito");
+          /*
+          				arrayPuzzleTileCountId[iTileBgCount].alt="";
+          				arrayPuzzleTileCountId[iTargetTileBgCount].alt="";
+          */
+          	//TO-DO: -verify: "iTargetTileBgCount" to cause incorrect output
+
+          				//arrayPuzzleTileCountId[iTileBgCountOfEmptyTile	].alt="";
+
+          				if (!bIsInitAutoGeneratePuzzleFromEnd) {
+          					//note: iCountMovementStep
+          					//iStepCountStatus++;
+          /*
+          					if (arrayPuzzleTileCountId[iTileBgCount].alt=="") {
+          						bHasExecutedTileExchange=false;
+          						//alert( "FALSE!" );
+          					}
+          					else {
+          */
+          						bHasExecutedTileExchange=true;
+          						iStepCountStatus++;
+
+          /*
+          					}
+          */
+          				}
+
+/* //removed by Mike, 20231105
+          				for (iKeyCount=0; iKeyCount<iDirectionTotalKeyCount; iKeyCount++) {
+          					arrayKeyPressed[iKeyCount]=false;
+          				}
+*/
+          				//-----
+
+          				//edited by Mike, 20230522
+          //				break;	//causes multiple entering in the function
+          				return;
+          			}
+              }
+            }
+          }
+
+//---
+
+	}
+
+  function processBossBattleResultFromInput(iXPos, iYPos) {
+
+	//added by Mike, 20231130
+  	if (bIsExecutingTransition) {
+		return;
+	}
+
+    //iMainImageTileStepAngleTemp+=10;
+    //iMainImageTileStepAngleTemp=90;
+
+    					//note: start 0 @clock 12 o'clock; clock-wise
+
+    /*					iMainImageTileStepAngle=(iMainImageTileStepAngle+10)%360;
+    */
+    					//alert(iMainImageTileStepAngle);
+    /*
+    					//added by Mike, 20230427
+    newMainImageTilePosY=mainImageTileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+    //					alert(newMainImageTilePosY);
+    					newMainImageTilePosY*=-1;
+    										newMainImageTilePosX=mainImageTileStepX*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+    */
+
+
+    /*
+    	iYPos=iYPos-(mainImageTilePosY+iVerticalOffsetInnerScreen);
+    	iXPos=iXPos-(mainImageTilePosX+iHorizontalOffset);
+
+    	alert("iYPos: "+iYPos);
+    	alert("iXPos: "+iXPos);
+
+    	if (iYPos<0) {
+    		iYPos*=-1;
+    	}
+    	if (iXPos<0) {
+    		iXPos*=-1;
+    	}
+    */
+
+    					//adds: image's top
+    					//edited by Mike, 20230425
+    					//counter-clockwise;
+    					//note: equation; output, correct; quadrants;
+    				//iMainImageTileStepAngleTemp=((-1*iMainImageTileStepAngle+90)%(360+90))%360;
+
+    /*
+    					var fMainImageTileStepAngleRad=iMainImageTileStepAngle*Math.PI/180.0;
+    					*/
+
+    					//alert(fMainImageTileStepAngleRad);
+
+/*						//removed by Mike, 20231124
+    					mainImageTileStepX=14; //2;
+    					mainImageTileStepY=14; //2;
+*/
+
+    ///TO-DO: -compute: angle based on mouse position;
+
+    //newMainImageTilePosY=mainImageTileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+    					//var iYPosTemp=iYPos*-1;
+
+    					//alert(iYPosTemp);
+
+    					//alert(iYPos);
+
+    					//note: object @center
+    					//mainImageTileStepX=mainImageTileStepX-iXPos
+
+
+    //Reference#1:https://www.mathsisfun.com/algebra/trig-finding-angle-right-triangle.html; last accessed: 20230427
+    //angle = atan(O/A)
+
+    //Reference#2: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2; last accessed: 202304287
+
+    //iMainImageTileStepAngle=Math.atan(300/400).toFixed(3);
+    //iMainImageTileStepAngle=Math.atan(-iYPos/iXPos).toFixed(3);
+    /*
+    //TO-DO: -fix: this
+    iMainImageTileStepAngle=Math.atan2(iYPos,iXPos).toFixed(3);
+    						var fMainImageTileStepAngleDegrees=iMainImageTileStepAngle*180.0/Math.PI;
+    */
+
+	//added by Mike, 20231124
+	var mainImageTile = document.getElementById("mainImageTileImageId");
+	//removed by Mike, 20231128
+	//mainImageTile.style.visibility = "visible";
+
+	//added by Mike, 20231124
+	var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+	//removed by Mike, 20231128
+	//mainImageTileTankBody.style.visibility = "visible";
+	
+	//added by Mike, 20231130
+	var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+	
+	
+	
+
+    if (!bHasFired) {
+
+/*	//edited by Mike, 20231125
+    mainImageTileStepY=10;
+    mainImageTileStepX=10;
+*/
+	mainImageTileProjectileStepY=mainImageTileProjectileVelocityY;
+    mainImageTileProjectileStepX=mainImageTileProjectileVelocityX;
+
+
+/*	//removed by Mike, 20231124
+    		var mainImageTile = document.getElementById("mainImageTileImageId");
+
+			//added by Mike, 20231124
+			mainImageTile.style.visibility = "visible";
+*/
+
+    //reference: https://stackoverflow.com/questions/15994194/how-to-convert-x-y-coordinates-to-an-angle; last accessed: 20230428;
+    //--> answer by: Mohsen, 20130413T2357; from 20150322T2246;
+
+    //start position @center
+    //note: subtract margine offset
+    /*
+    var iDeltaX=iXPos-mainImageTilePosX;
+    var iDeltaY=iYPos-mainImageTilePosY;
+    */
+    /*
+    var iDeltaX=(iXPos-iHorizontalOffset)-mainImageTilePosX;
+    var iDeltaY=(iYPos-iVerticalOffset)-mainImageTilePosY;
+    */
+    var iDeltaX=(iXPos-iHorizontalOffset)-(mainImageTilePosX+iImageFrameWidth/2);
+    var iDeltaY=(iYPos-iVerticalOffset)-(mainImageTilePosY+iImageFrameHeight/2);
+
+
+
+
+    /*
+    alert("iXPos: "+iXPos);
+    alert("mainImageTilePosX: "+mainImageTilePosX);
+    alert("iDeltaX: "+iDeltaX);
+    */
+
+
+    iDeltaY*=-1;
+
+    var fMainImageTileStepAngleRad=Math.atan2(iDeltaX,iDeltaY);
+
+    iMainImageTileStepAngle=fMainImageTileStepAngleRad*(180/Math.PI);
+
+    //					newMainImageTileProjectilePosY*=-1;
+
+    //clockwise
+    iMainImageTileStepAngle=(iMainImageTileStepAngle)%360;
+    /*
+    alert(iMainImageTileStepAngle);
+    */
+
+    					mainImageTile.style.transform = "rotate("+ (iMainImageTileStepAngle % 360) +"deg)";
+
+
+
+
+
+
+    //fMainImageTileStepAngleDegrees = (fMainImageTileStepAngleDegrees + 360) % 360;  // +360 for implementations where mod returns negative numbers
+
+    //					alert(newMainImageTilePosY);
+    /*
+    alert("iYPos: "+iYPos);
+    alert("iXPos: "+iXPos);
+
+    alert("iMainImageTileStepAngle: "+iMainImageTileStepAngle);
+    alert("fMainImageTileStepAngleDegrees: "+fMainImageTileStepAngleDegrees);
+    */
+
+    /*
+    			iMainImageTileStepAngle=fMainImageTileStepAngleDegrees;
+    */
+
+    //alert(iMainImageTileStepAngle);
+
+
+    /* //edited by Mike, 20230427
+    //note: negative; due to inverted y-axis
+    					//newMainImageTilePosY=mainImageTileStepX/Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+    			newMainImageTilePosY=mainImageTileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+    //					alert(newMainImageTilePosY);
+    					newMainImageTilePosY*=-1;
+
+
+    					//newMainImageTilePosX=mainImageTileStepY/Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+    										newMainImageTilePosX=mainImageTileStepX*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+    */
+
+/* //edited by Mike, 20232224
+    mainImageTileProjectileStepY=20;
+    mainImageTileProjectileStepX=20;
+*/
+/* //removed by Mike, 20231125
+	mainImageTileProjectileVelocityY+=10;//8;
+	mainImageTileProjectileVelocityX+=10;//8;
+
+
+	//alert("mainImageTileProjectileVelocityY: "+mainImageTileProjectileVelocityY);
+
+	if (mainImageTileProjectileStepY<mainImageTileProjectileStepYMax) {
+		mainImageTileProjectileStepY+=mainImageTileProjectileVelocityY;//++;
+	}
+
+	if (mainImageTileProjectileStepX<mainImageTileProjectileStepXMax) {
+		mainImageTileProjectileStepX+=mainImageTileProjectileVelocityX;//++;
+	}
+*/
+
+    newMainImageTileProjectilePosY=mainImageTileProjectileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+    //start position @center
+    //newMainImageTileProjectilePosY+=iVerticalOffsetInnerScreen+mainImageTilePosY;
+    //newMainImageTileProjectilePosY=(iVerticalOffsetInnerScreen+mainImageTilePosY+mainImageTileProjectileStepY)*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
+
+    					newMainImageTileProjectilePosY*=-1;
+    					newMainImageTileProjectilePosX=mainImageTileProjectileStepX*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+
+		//added by Mike, 20231125
+		mainImageTileProjectilePosX = mainImageTile.style.left;
+		mainImageTileProjectilePosY = mainImageTile.style.top;
+
+
+    					bHasFired=true;
+						
+			//added by Mike, 20231130
+/*	//removed by Mike, 20231130			
+			if (!bIsExecutingTransition) {
+*/
+				var myAudioEffectCannonFire = document.getElementById("myAudioEffectCannonFireId");
+
+				myAudioEffectCannonFire.setAttribute("src", sAudioEffectActionCannonFire);
+
+				//fMyAudioEffectVolume=0.2;
+				fMyAudioEffectCannonFireVolume=1.0;
+				myAudioEffectCannonFire.volume=fMyAudioEffectCannonFireVolume;
+				myAudioEffectCannonFire.loop=false;
+				myAudioEffectCannonFire.play();
+/*				
+			}
+*/											
+    }
+
+    //added by Mike, 20231119
+    //reached this part
+    bIsPuzzleTileTargetHit=false;
+
+
+
+    //newMainImageTileProjectilePosX=(iHorizontalOffset+mainImageTilePosX+mainImageTileProjectileStepX)*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
+
+
+    /* //removed by Mike, 20230428
+    					bHasFired=true;
+    */
+
+    /*
+    					alert("newMainImageTileProjectilePosY: "+newMainImageTileProjectilePosY);
+    											alert("newMainImageTileProjectilePosX: "+newMainImageTileProjectilePosX);		*/
+
+    					//reference: https://stackoverflow.com/questions/8388440/converting-a-double-to-an-int-in-javascript-without-rounding; last accessed: 20230425
+    					//answer by: kubetz, 20111205T1630
+    					//edited by: Rooke, 20160329T1858
+
+    					//identify the quadrant; start @1
+    					var iQuadrant = parseInt(iMainImageTileStepAngle/90,10)+1;
+    					//alert(iQuadrant);
+    /*
+    					switch (iQuadrant) {
+    						case 1:
+    							mainImageTileStepX=2;
+    							mainImageTileStepY=-2;
+    							break;
+    						case 2:
+    							mainImageTileStepX=-2;
+    							mainImageTileStepY=-2;
+    							break;
+    						case 3:
+    							mainImageTileStepX=-2;
+    							mainImageTileStepY=2;
+    							break;
+    						case 4:
+    							mainImageTileStepX=2;
+    							mainImageTileStepY=2;
+    							break;
+    					}
+    */
+
+    /*
+    				    //movement
+    					mainImageTilePosY=mainImageTilePosY+newMainImageTilePosY;
+    					mainImageTilePosX=mainImageTilePosX+newMainImageTilePosX;
+
+    					//alert("mainImageTileStepX: "+mainImageTileStepX);
+    					//alert("mainImageTilePosY Part1: "+mainImageTilePosY);
+    		mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+    		mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+    */
+  }
+
+	//added by Mike, 20231125
+	function initKeyboardInput() {
+		document.body.onkeydown = function(e){
+			//alert("e.keyCode: "+e.keyCode);
+
+				//added by Mike, 20221121
+				bIsActionKeyPressed=false;
+
+
+				//RIGHT ARROW; 39
+				//LEFT ARROW; 37
+				//UP ARROW; 38
+				//DOWN ARROW; 40
+				//alert(e.keyCode);
+
+
+				//OK; //note: unicode keycode, where: key d : 100?
+				//note: auto-accepts keyhold; however, with noticeable delay
+				//solved: via bKeyDownRight = false; et cetera
+				if (e.keyCode==68) { //key d
+			//			alert("dito");
+					arrayKeyPressed[iKEY_D]=true;
+				}
+				else if (e.keyCode==65) { //key a
+					arrayKeyPressed[iKEY_A]=true;
+				}
+
+				if (e.keyCode==39) { //key RIGHT
+					arrayKeyPressed[iKEY_D]=true;
+				}
+				else if (e.keyCode==37) { //key LEFT
+					arrayKeyPressed[iKEY_A]=true;
+				}
+
+
+/*
+				if (e.keyCode==87) { //key w
+					arrayKeyPressed[iKEY_W]=true;
+				}
+				else if (e.keyCode==83) { //key s
+					arrayKeyPressed[iKEY_S]=true;
+				}
+*/
+
+/*
+				//added by Mike, 20221101
+				//notes: RIGHT-SIDE BUTTONS to already accept
+				//both capital and small letters
+
+				//RIGHT-SIDE BUTTONS
+				if (e.keyCode==73) { //key i
+					arrayKeyPressed[iKEY_I]=true;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=true;
+				}
+				else if (e.keyCode==75) { //key k
+					arrayKeyPressed[iKEY_K]=true;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=true;
+				}
+
+				if (e.keyCode==74) { //key j
+					arrayKeyPressed[iKEY_J]=true;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=true;
+				}
+				else if (e.keyCode==76) { //key l
+					arrayKeyPressed[iKEY_L]=true;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=true;
+				}
+*/
+			}
+
+			//added by Mike, 20220822
+			document.body.onkeyup = function(e){
+				//alert("KEYUP; e.keyCode: "+e.keyCode);
+				if (e.keyCode==68) { //key d
+					//edited by Mike, 20220823
+					//bKeyDownRight=false;
+					arrayKeyPressed[iKEY_D]=false;
+				}
+				else if (e.keyCode==65) { //key a
+					arrayKeyPressed[iKEY_A]=false;
+				}
+
+				//added by Mike, 20220823
+				if (e.keyCode==87) { //key w
+					arrayKeyPressed[iKEY_W]=false;
+				}
+				else if (e.keyCode==83) { //key s
+					arrayKeyPressed[iKEY_S]=false;
+				}
+/*
+				//added by Mike, 20221101
+				//RIGHT-SIDE BUTTONS
+				if (e.keyCode==73) { //key i
+					arrayKeyPressed[iKEY_I]=false;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=false;
+				}
+				else if (e.keyCode==75) { //key k
+					arrayKeyPressed[iKEY_K]=false;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=false;
+				}
+
+				if (e.keyCode==74) { //key j
+					arrayKeyPressed[iKEY_J]=false;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=false;
+				}
+				else if (e.keyCode==76) { //key l
+					arrayKeyPressed[iKEY_L]=false;
+
+					//added by Mike, 20221121
+					bIsActionKeyPressed=false;
+				}
+*/
+			}
+	}
+
+	//added by Mike, 20230423
+	function initMouseInput() {
+		//reference: https://stackoverflow.com/questions/70827887/detect-click-vs-touch-in-javascript;
+		//last accessed: 20221110
+		//answer by:  Jacob, 20220124T0110
+		document.body.addEventListener('pointerdown', (event) => {
+
+			//added by Mike, 20231114
+			if (iInputDelayCount<iInputDelayCountMax) {
+				iInputDelayCount++;
+				return;
+			}
+
+			//reference: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType;
+			//last accessed: 20221122
+			switch(event.pointerType) {
+				case 'mouse':
+        //note: ZOOM function causes position ERROR via screenX
+        var iXPos = event.clientX;//screenX;
+
+        //note: screenY includes BROWSER address bar, et cetera;
+        var iYPos = event.pageY; //screenY;
+
+/*
+        //edited by Mike, 20230423
+        alert("iXPos: "+iXPos);
+        alert("iYPos: "+iYPos);
+*/
+
+				  //added by Mike, 20231122
+				  if (bHasPressedStart) {
+					//alert(">");
+  					if (!bHasViewedHowToPlayGuide) {
+  						//alert(">>>>>");
+  						var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");
+
+							//removed by Mike, 20231127
+//							howToPlayGuideImage.style.visibility = "hidden";
+							
+							//added by Mike, 20231127
+							if (!bHasViewedHowToPlayGuide) {
+							  if (!bIsExecutingTransition) {
+								resetTransitionEffect();
+							  }
+							}
+							
+							bHasViewedHowToPlayGuide=true;
+
+  						return;
+  					}
+				  }
+				  else {
+					  //added by Mike, 20231119
+					  bHasPressedStart=true;
+/*
+            var myCanvas = document.getElementById("myCanvasId");
+            iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+            myCanvas.style.left=iHorizontalOffset+"px";
+*/
+
+            //added by Mike, 20231126
+  //          alert(iXPos);
+/*
+            if (iXPos>300) {
+////              var myCanvas = document.getElementById("myCanvasId");
+////              iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+////              myCanvas.style.left=iHorizontalOffset+"px";
+            }
+            else {
+              bIsStillUsingItchScreen=true; //not itch.io full screen;
+            }
+*/
+					  return;
+				  }
+
+
+/*
+          alert(iXPos);
+          //935+/-; itch.io fullscreen button
+          if ((iXPos>925) && (iXPos<945)){
+//          if (iXPos==930){
+
+                        var myCanvas = document.getElementById("myCanvasId");
+                        iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2;
+                        myCanvas.style.left=iHorizontalOffset+"px";
+          }
+*/
+
+/*
+          //TODO: -add: this
+          if (bIsUsingAppleWebKit) {
+  				  bIsUsingAppleMac=true;
+  				}
+
+  				//added by Mike, 20230710
+  				if (!bHasViewedTitle) {
+  					return;
+  				}
+  				//added by Mike, 20230710
+  				if (bIsInitAutoGeneratePuzzleFromEnd) {
+  					return;
+  				}
+  				//added by Mike, 20230710
+  				if (bIsPuzzleDone) {
+  					return;
+  				}
+*/
+
+
+
+					//added by Mike, 20231107
+					processResultFromInput(iXPos, iYPos);
+
+					//edited by Mike, 20231124; from 20231122
+          if (!bIsPuzzleDone) {
+  					verifyIfAllObjectsOfTileTypeDone(iXPos, iYPos);
+
+  					//added by Mike, 20231110
+  					bIsPuzzleDone = isAutoVerifiedPuzzleDone();
+					
+					//added by Mike, 20231127
+					if (bIsPuzzleDone) {
+						if (!bIsExecutingTransition) {
+							resetTransitionEffect();
+							
+							//added by Mike, 20231127
+							var mainImageMonster = document.getElementById("mainImageMonster0");
+							mainImageMonster.style.visibility = "hidden";
+						}
+					}					
+          }
+
+
+					//removed by Mike, 20231114
+					//iInputDelayCount=0;
+
+
+					//alert(bIsPuzzleDone);
+
+/* //removed by Mike, 20231111
+					if (bIsPuzzleDone) {
+						alert("CONGRATULATIONS!");
+
+						//added by Mike, 20231111
+						//reset
+						bIsActionKeyPressed=false;
+						iTargetAtSpaceBlinkAnimationCount=0;
+						puzzleTileImageSpaceBorder.style.visibility = "hidden";
+
+					}
+*/
+					break;
+				case 'touch':
+/*
+					//alert("TOUCH");
+					if (bIsUsingAppleWebKit) {
+					  //added by Mike, 20221111; removed by Mike, 20221118
+					  //note: NOT yet set
+					  if (bIsUsingAppleMac) {
+						toggleFullScreen();
+					  }
+
+					  bIsUsingAppleMac=false;
+					  bIsMobile=true; //added by Mike, 20221110
+
+					  //added by Mike, 20230111
+					  bHasSetMaxWidthHeight=true;
+					}
+*/
+					break;
+			}
+		});
+	}
+
+
+	//TODO: -fix: touch-and-hold image displayed problem
+function initTouchInput() {
+	//added by Mike, 20231107
+	//reference: https://stackoverflow.com/questions/62823062/adding-a-simple-left-right-swipe-gesture/62825217#62825217;
+	//answer by: smmehrab, 20200709T2330; edited 20200711T0355
+	document.body.addEventListener('touchstart', function (event) {
+
+		//added by Mike, 20231114
+		if (iInputDelayCount<iInputDelayCountMax) {
+			iInputDelayCount++;
+			return;
+		}
+
+
+		iEventChangedTouchCount = event.changedTouches.length;
+
+		for (iCount=0; iCount<iEventChangedTouchCount; iCount++) {
+
+		//added by Mike, 20221121
+//		if (iCurrentMiniGame==MINI_GAME_PUZZLE) {
+/* //removed temporarily by Mike, 20231107
+			if (bHasPressedStart) {
+*/
+
+/* //removed by Mike, 20230121
+				var monsterTile = document.getElementById("monsterTileImageId");
+*/
+				//edited by Mike, 20221121
+				//note: ZOOM function causes position ERROR via screenX
+				var iXPos = event.changedTouches[iCount].clientX;//screenX;
+
+				//note: screenY includes BROWSER address bar, et cetera;
+				var iYPos = event.changedTouches[iCount].pageY; //screenY;
+
+				//alert(iYPos);
+/*
+				alert("iXPos: "+iXPos);
+				alert("iYPos: "+iYPos);
+*/
+				processResultFromInput(iXPos, iYPos);
+
+
+				//added by Mike, 20231114
+				bIsPuzzleDone = isAutoVerifiedPuzzleDone();
+				//removed by Mike, 20231114
+				//iInputDelayCount=0;
+
+
+/* //removed temporarily by Mike, 20231107
+			}
+*/
+//		}
+		}
+	});
+}
+
+function removeFromPuzzleStageExcessTiles() {
+
+	//iTileBgCountMax = 16
+	//iTileBgCountMax=2;
+	for (let iTileBgCount=0; iTileBgCount<iTileBgCountMax; iTileBgCount++) {
+
+		arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+		//note error here
+
+		//alert(">>>>");
+
+		//arrayPuzzleTileCountId[iTileBgCount] = 0;
+
+		//alert("dito: "+iTileBgCount);
+
+		arrayPuzzleTileCountId[iTileBgCount].style.visibility="hidden";
+
+	}
+
+	//alert(arrayPuzzleTileCountId[5]);
+
+
+	//added by Mike, 20221119
+	var puzzleTileImageTargetBorder = document.getElementById("divPuzzleTileImageTargetBorderId");
+
+	puzzleTileImageTargetBorder.style.visibility="hidden";
+
+	//added by Mike, 20221121
+	var puzzleTileImageSpaceBorder = document.getElementById("divPuzzleTileImageSpaceBorderId");
+
+	puzzleTileImageSpaceBorder.style.visibility="hidden";
+
+}
+
+
+	//added by Mike, 20221112
+//note: execute this due to broken image icon appears using Google Chrome
+function autoUpdatePuzzleTileImage() {
+	iTileBgCount=0; //0+1;//0;
+
+	while (iTileBgCount<16) {
+
+	//alert(iTileBgCount);
+		//alert(arrayPuzzleTileCountId[iTileBgCount].style.visibility);
+		//arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+
+	//alert(arrayPuzzleTileCountId[iTileBgCount].alt);
+	//alert(arrayPuzzleTileCountId[iTileBgCount].style.objectPosition);
+
+			//noted by Mike, 20231104
+			//this shall need //arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+
+			if (arrayPuzzleTileCountId[iTileBgCount].alt=="") {
+
+				//alert(iTileTextCount);
+
+			//notes: noticeable DELAY to fix OUTPUT error;
+			//where: IF SPACE tile (BLINKING) is immediately
+			//to the left of tile with text "15",
+			//the tiles that were exchanged
+			//to be located below or right of it
+			//are INCORRECTLY displayed as also the SPACE tile,
+			//albeit NOT BLINKING
+			//elapsed time: 5hrs (approx);
+			//technique to solve: CLARIFY; verify significance
+			//example: VALUE : arrayPuzzleTileCountId, iTileBgCount;
+			//to get iRowCount and iColumnCount position
+			//--> example OUTPUT VALUE: "15"
+
+			//note: Tile Space; target number become its own
+			//clip
+/* //edited by Mike, 20230111
+			arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-96px -96px";
+*/
+			arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-192px -192px";
+
+			}
+			else {
+						//alert(">>>>");
+
+			//edited by Mike, 20231108; from 20221113
+	//iTileTextCount=parseInt(arrayPuzzleTileCountId[iTileBgCount].alt);
+
+	//alert(arrayPuzzleTileCountId[iTileBgCount].alt.substring(0,1));
+			sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCount].alt;
+			//iTileTextCount=parseInt(arrayPuzzleTileCountId[iTileBgCount].alt.substring(0,arrayPuzzleTileCountId[iTileBgCount].alt.indexOf(",")));
+
+		    //edited by Mike, 20231108	//iTileTextCount=parseInt(sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(",")));
+			iTileTextCount=parseInt(sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(",FK")));
+
+			//alert(">>>"+iTileTextCount);
+
+/*
+			if (isNan(iTileTextCount)) {
+				iTileTextCount=0;
+			}
+*/
+
+				iColumnCount = (iTileTextCount-1)%4;
+				iRowCount = Math.floor((iTileTextCount-1)/4);
+
+/* //edited by Mike, 20230111
+				//x, y
+				arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + iColumnCount*32 + "px -" + iRowCount*32 + "px";
+*/
+
+				//edited by Mike, 20231115
+//				arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + iColumnCount*64 + "px -" + iRowCount*64 + "px";
+
+				//TODO: -add: rest animation for rest of tiles; over 2 frames?
+				sCurrHitTile=arrayPuzzleTileCountId[iTileBgCount].alt;
+				sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+
+/* //TODO: -add: animation;
+				if ((sCurrHitTile=="1") || (sCurrHitTile=="16")) {
+					if (iAnimationCount==0) { //%2
+						arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + (iColumnCount*64) + "px -" + iRowCount*64 + "px";
+					}
+					else if (iAnimationCount==1) {
+						arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + (iColumnCount*64+256) + "px -" + iRowCount*64 + "px";
+
+						//alert(">>>>");
+					}
+					else {
+						arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + (iColumnCount*64+512) + "px -" + iRowCount*64 + "px";
+
+						//alert(">>>>");
+					}
+				}
+				else {
+				//edited by Mike, 20231129
+				//arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + (iColumnCount*64) + "px -" + iRowCount*64 + "px";
+				
+					//alert("sCurrHitTile: "+sCurrHitTile);
+				
+					
+				}
+*/
+
+				arrayPuzzleTileCountId[iTileBgCount].style.objectPosition = "-" + (iColumnCount*64) + "px -" + iRowCount*64 + "px";
+/*
+				}
+*/
+			}
+
+			iTileBgCount++;
+	}
+
+	//alert("iAnimationCount: "+iAnimationCount);
+	//added by Mike, 20231115
+	if (iAnimationDelayCount==iAnimationDelayCountMax) {
+		//edited by Mike, 20231116
+//		iAnimationCount=(iAnimationCount+1)%2; //iAnimationCountMax
+		iAnimationCount=(iAnimationCount+1)%3; //2; //iAnimationCountMax
+		iAnimationDelayCount=0;
+	}
+	else {
+		iAnimationDelayCount++;
+	}
+
+}
+
+  //added by Mike, 20231124
+  function closePuzzle() {
+	let iTileBgCount=0;
+
+	for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+		for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+  			//edited by Mike, 20221118
+  			//arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+  			//alert(">>>");
+  			//alert(">>>"+iTileBgCount);
+
+  			arrayPuzzleTilePos[iRowCount][iColumnCount]=iTileBgCount;
+
+
+  			arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+  			arrayPuzzleTileCountId[iTileBgCount].style.visibility="hidden";
+
+        iTileBgCount++;
+
+  			//alert(iTileBgCount);
+      }
+    }
+
+	bHasClosedPuzzle=true;
+  }
+
+	function initPuzzle() {
+		//added by Mike, 20231111
+		//TODO: -verify: this
+		var myCanvas = document.getElementById("myCanvasId");
+		myCanvas.style.top = (iVerticalOffsetInnerScreen+0)+"px";
+
+/*  //removed by Mike, 20231126
+    //edited by Mike, 20231126
+    //iHorizontalOffset=myCanvas.getBoundingClientRect().x;
+    //note: for INNER SCREEN
+  	iHorizontalOffset=(screen.width)/2-iStageMaxWidth/2+iShakeOffsetWidth;
+
+    myCanvas.style.left = iHorizontalOffset+"px";
+*/
+
+
+    //added by Mike, 20231126
+    var myCanvasTwo = document.getElementById("myCanvasTwoId");
+    myCanvasTwo.style.top = myCanvas.style.top;
+    myCanvasTwo.style.left = myCanvas.style.left;
+
+
+			//alert(iRowCountMax);
+
+		let iTileBgCount=0;
+
+		var iCurrTileTypeCopyCount=0;
+
+
+		for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+			for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+			//edited by Mike, 20221118
+			//arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+			//alert(">>>");
+			//alert(">>>"+iTileBgCount);
+
+			arrayPuzzleTilePos[iRowCount][iColumnCount]=iTileBgCount;
+
+
+			arrayPuzzleTileCountId[iTileBgCount] = document.getElementById("puzzleTileImageIdBg"+iTileBgCount);
+
+			//arrayPuzzleTileCountId[iTileBgCount].style.visibility="hidden";
+
+			//alert(iTileBgCount);
+
+			arrayPuzzleTileCountId[iTileBgCount].style.left = iHorizontalOffset+iOffsetWidth+iPuzzleTileWidth*iColumnCount+iBorderOffset*iColumnCount+"px";
+
+						//alert(">>>");
+
+
+			arrayPuzzleTileCountId[iTileBgCount].style.top = 0+iOffsetHeight+iPuzzleTileHeight*iRowCount+iBorderOffset*iRowCount+"px";
+
+	//		alert (iPuzzleTileWidth*iRowCount);
+
+
+			//edited by Mike, 20221127	//arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+/*			if (bHasPressedStart) {
+*/
+         //removed by Mike 20231126
+			   //arrayPuzzleTileCountId[iTileBgCount].style.visibility="visible";
+/*
+			}
+*/
+
+
+
+				//edited by Mike, 20231109
+				if (iCurrTileTypeCopyCount<12) {
+
+				   //edited by Mike, 20231108    //arrayPuzzleTileCountId[iTileBgCount].alt=(iCurrTileTypeCopyCount+1)+"";
+				   //edited by Mike, 20231108 //arrayPuzzleTileCountId[iTileBgCount].alt=(iCurrTileTypeCopyCount+1)+",1";
+					arrayPuzzleTileCountId[iTileBgCount].alt=(iCurrTileTypeCopyCount+1)+",FK=1"; //note: semicolon not usable in .alt text
+
+					iCurrTileTypeCopyCount++;
+				}
+				//note: remaining tiles need to be filled
+				else {
+					//edited by Mike, 20231108
+					//arrayPuzzleTileCountId[iTileBgCount].alt=(15+1)+"";
+					//edited by Mike, 20231108
+					//arrayPuzzleTileCountId[iTileBgCount].alt=(15+1)+",1";
+					//edited by Mike, 20231109
+					//arrayPuzzleTileCountId[iTileBgCount].alt=(15+1)+",FK=1";
+					arrayPuzzleTileCountId[iTileBgCount].alt=(15+1)+",FK=";	//no FK
+				}
+
+
+				arrayPuzzleTileCountId[iTileBgCount].className="Image32x32Tile";
+
+				iTileBgCount++;
+			}
+		}
+
+
+		for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+		  for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+				//alert(iTileBgCount);
+				//alert(arrayPuzzleTileCountId[iRowCount][iColumnCount]);
+				//alert(arrayPuzzleTilePos[iRowCount][iColumnCount]);
+
+				//iTileBgCountTemp=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+
+
+//-----
+
+		//alert(iTileBgCount);
+		//alert(arrayPuzzleTileCountId[iRowCount][iColumnCount]);
+		//alert(arrayPuzzleTilePos[iRowCount][iColumnCount]);
+
+
+
+//init FK in puzzle; no FK with the same type;
+	//added by Mike, 20231109
+	//jumble the positions of the tiles;
+	//var sRecordedSteps="3121220312133003112111302212133333303312003030030303133122112122121303033033311212002";
+
+			iTileBgCountTemp=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+		//alert(">>>>"+iTileBgCountTemp);
+		//sTileCountIdAltTemp=arrayPuzzleTileCountId[iTileBgCountTemp].alt;
+	//sOutputTileValue=sTileCountIdAltTemp.substring(0,sTileCountIdAltTemp.indexOf(",FK"));
+
+			//random
+			let iDirection = window.parseInt(Math.random() * 4);
+
+			//alert(">>>>"+iDirection);
+
+			//iDirection=2; //already done;
+			//iDirection=3; //pre-set puzzle; simple;
+
+
+			//alert("iRowCount: "+iRowCount);
+
+			switch (iDirection) {
+				case iKEY_W: //0
+					if ((iRowCount-1)>=0) {
+	//					arrayPuzzleTileCountId[iRowCount][iColumnCount].alt=arrayPuzzleTileCountId[iRowCount-1][iColumnCount].alt;
+
+						iTileBgCountNew=arrayPuzzleTilePos[iRowCount-1][iColumnCount];
+
+						sTileCountIdAltNew=arrayPuzzleTileCountId[iTileBgCountNew].alt;
+
+						//alert("DITO: "+sTileCountIdAltNew);
+
+						arrayPuzzleTileCountId[iTileBgCountTemp].alt=sTileCountIdAltNew;
+					}
+					break;
+				case iKEY_S: //1
+					if ((iRowCount+1)<iRowCountMax) {
+						iTileBgCountNew=arrayPuzzleTilePos[iRowCount+1][iColumnCount];
+
+						sTileCountIdAltNew=arrayPuzzleTileCountId[iTileBgCountNew].alt;
+
+						arrayPuzzleTileCountId[iTileBgCountTemp].alt=sTileCountIdAltNew;
+					}
+					break;
+				case iKEY_A: //2
+					if ((iColumnCount-1)>=0) {
+						iTileBgCountNew=arrayPuzzleTilePos[iRowCount][iColumnCount-1];
+
+						sTileCountIdAltNew=arrayPuzzleTileCountId[iTileBgCountNew].alt;
+
+						arrayPuzzleTileCountId[iTileBgCountTemp].alt=sTileCountIdAltNew;
+					}
+					break;
+				case iKEY_D: //3
+					if ((iColumnCount+1)<iColumnCountMax) {
+						iTileBgCountNew=arrayPuzzleTilePos[iRowCount][iColumnCount+1];
+
+						sTileCountIdAltNew=arrayPuzzleTileCountId[iTileBgCountNew].alt;
+
+						arrayPuzzleTileCountId[iTileBgCountTemp].alt=sTileCountIdAltNew;
+					}
+					break;
+			}
+
+		}
+	}
+//-----
+
+		if (isAutoVerifiedPuzzleDone()) {
+
+			var bAutoGenerateSoldierTileTypeDone=false;
+			var bAutoGenerateTankTileTypeDone=false;
+			var bAutoGenerateBuildingTileTypeDone=false;
+
+
+			for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {
+			  for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+
+					//alert(iTileBgCount);
+					//alert(arrayPuzzleTileCountId[iRowCount][iColumnCount]);
+					//alert(arrayPuzzleTilePos[iRowCount][iColumnCount]);
+
+						iCurrTileBgCount=arrayPuzzleTilePos[iRowCount][iColumnCount];
+
+						//alert(">>iTileBgCountNew: "+iTileBgCountNew);
+
+						sCurrHitTile=arrayPuzzleTileCountId[iCurrTileBgCount].alt;
+
+						//alert("DITO: "+sTileCountIdAltNew);
+
+						sCurrHitTile=sCurrHitTile.substring(0,sCurrHitTile.indexOf(",FK="));
+
+						sCurrHitTileType="";
+
+						sCurrHitTileType=Math.floor(parseInt((sCurrHitTile-1)/4));
+
+
+
+					if (parseInt(sCurrHitTileType)==0) {
+						if (!bAutoGenerateSoldierTileTypeDone) {
+							arrayPuzzleTileCountId[iCurrTileBgCount].alt=((parseInt(sCurrHitTile)+1)%4+(0*4))+",FK=1";
+
+							bAutoGenerateSoldierTileTypeDone=true;
+						}
+					}
+					else if (parseInt(sCurrHitTileType)==1) {
+						if (!bAutoGenerateTankTileTypeDone) {
+							arrayPuzzleTileCountId[iCurrTileBgCount].alt=((parseInt(sCurrHitTile)+1)%4+(1*4))+",FK=1";
+
+							bAutoGenerateTankTileTypeDone=true;
+						}
+					}
+					else if (parseInt(sCurrHitTileType)==2) {
+						if (!bAutoGenerateBuildingTileTypeDone) {
+							arrayPuzzleTileCountId[iCurrTileBgCount].alt=((parseInt(sCurrHitTile)+1)%4+(2*4))+",FK=1";
+
+							bAutoGenerateBuildingTileTypeDone=true;
+						}
+					}
+
+
+
+/*
+
+
+						arrayPuzzleTileCountId[iTileBgCountTemp].alt=sTileCountIdAltNew;
+*/
+				}
+			}
+		}
+	}
+
+  //added by Mike, 20221123
+  //@return bool
+  function isPointsOfRectIntersectingPointsOfRect(iXPos1, iYPos1, iXPos2, iYPos2) {
+  		//alert("iPuzzleTileWidth: "+iPuzzleTileWidth);
+
+  	let mdo1XPos = iXPos1;
+  	let mdo1YPos = iYPos1;
+
+  	//edited by Mike, 20230524
+  	//set as a point; not a tile
+  	let mdo1Width = 1;//iPuzzleTileWidth;
+  	let mdo1Height = 1;//iPuzzleTileHeight;
+
+  	let mdo2XPos = iXPos2;
+  	let mdo2YPos = iYPos2;
+
+  	let mdo2Width = iPuzzleTileWidth;
+  	let mdo2Height = iPuzzleTileHeight;
+
+  	let iOffsetXPosAsPixel = 0;
+  	let iOffsetYPosAsPixel = 0;
+
+  	//alert("mdo1XPos: "+mdo1XPos);
+
+  /*
+  	alert("mdo1XPos: "+mdo1XPos+"; "+"mdo1Width: "+mdo1Width);
+  	alert("mdo2XPos: "+mdo2XPos+"; "+"mdo2Width: "+mdo2Width);
+  */
+
+  	if ((mdo2YPos+mdo2Height < mdo1YPos+iOffsetYPosAsPixel) || //is the bottom of mdo2 above the top of mdo1?
+  		(mdo2YPos > mdo1YPos+mdo1Height-iOffsetYPosAsPixel) || //is the top of mdo2 below the bottom of mdo1?
+  		(mdo2XPos+mdo2Width < mdo1XPos+iOffsetXPosAsPixel) || //is the right of mdo2 to the left of mdo1?
+  		(mdo2XPos > mdo1XPos+mdo1Width-iOffsetXPosAsPixel)) //is the left of mdo2 to the right of mdo1?
+  	{
+  		//no collision
+  		return false;
+  	}
+
+  	return true;
+  }
+
+
+
+	function onLoad() {
+/*
+		while (bIsInitAutoGeneratePuzzleFromEnd) {
+			autoGeneratePuzzleFromEndForStorage();
+		}
+*/
+		//TO-DO: -update: this; add bIsNotEnd
+/*
+		while (true) {
+			iFacingDirection=iFACING_DOWN;
+			miniGameActionUpdate();
+		}
+*/
+
+// ---------------------
+
+//added by Mike, 2022113
+//keyphrase: identify machine and computer browser
+
+//added by Mike, 20221108
+//alert(navigator.userAgent);
+
+//added by Mike, 20220910
+//reference: https://stackoverflow.com/questions/6666907/how-to-detect-a-mobile-device-with-javascript; last accessed: 20220910
+//answer by: Baraa, 20141026T2059
+//edited by Mike, 20221108
+//	if (/Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+
+//alert(navigator.userAgent);
+
+//if (/Mobile|Android|webOS|iPhone|iPad|iPod|AppleWebKit|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+
+  //edited by Mike, 20231105
+  //if (/Mobile|Android|webOS|iPhone|iPad|iPod|AppleWebKit|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+  if (/Macintosh|Mac|Mobile|Android|webOS|iPhone|iPad|iPod|AppleWebKit|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+
+//		alert("detected: Mobile Browser!");
+
+  //added by Mike, 20220925
+  bIsMobile=true;
+
+  //added by Mike, 20221108
+  if (navigator.userAgent.includes("AppleWebKit")) {
+    bIsUsingAppleWebKit=true;
+    //added by Mike, 20221109
+    bIsUsingAppleMac=false; //default
+  }
+
+  //added by Mike, 20221113
+  //notes: "AppleWebKit" to exist even with "Android"
+  if (navigator.userAgent.includes("Android")) {
+    bIsUsingAppleWebKit=false;
+  }
+
+  //added by Mike, 20221113
+  //example: Linux x86_64 (desktop)
+  if (navigator.userAgent.includes("Linux x")) {
+    bIsMobile=false;
+  }
+
+  //note: iPAD and MacBookPro OS : Mac OS X
+  //adds: to be re-classified as iPAD via TOUCH command
+  if ((navigator.userAgent.includes("Macintosh")) || navigator.userAgent.includes("Mac")) {
+    bIsUsingAppleMac=true;
+  }
+
+  //added by Mike, 20230111
+  //note: TO-DO: -add: touch/mouse click ACTION COMMANDS
+  //if using EDGE browser;
+  //observed: shaking on EDGE browser via desktop,
+  //caused by bIsMobile=true;
+  if (navigator.userAgent.includes("Edge")) { //not "Edg"
+    bIsMobile=false;
+  }
+}
+
+/* //removed by Mike, 20231123
+//added by Mike, 20231107
+var iMaxTileTypeCopyCount=4;
+var iCurrTileTypeCopyCount=0;
+//4*4
+var arrayTileType = [0,0,0,0]; //iCurrTileTypeCount
+
+var iArrayTileTypeLength=4;
+var iCurrArrayTileTypeCount=0;
+
+//alert(arrayTileType[3]);
+*/
+
+
+/*
+//added by Mike, 20221122
+var controllerGuideImage = document.getElementById("controllerGuideImageId");
+controllerGuideImage.style.visibility = "hidden"; //hidden
+
+//added by Mike, 20230115
+var stepCountGuideImage = document.getElementById("stepCountGuideImageId");
+stepCountGuideImage.style.visibility = "hidden"; //hidden
+*/
+
+//alert(bIsUsingAppleMac); //true
+
+/* //removed by Mike 20231105
+
+//reference: https://stackoverflow.com/questions/4917664/detect-viewport-orientation-if-orientation-is-portrait-display-alert-message-ad; last accessed: 20220910
+//answer by: Jatin, 20120731T0711;
+//edited by Tisho, 20120731T0730
+//add: listener to detect orientation change
+window.addEventListener("orientationchange", function() {
+  //orientation number (in degrees) : 90 and -90 for landscape; 0 for portrait
+  //edited by Mike, 20220911
+  //alert(window.orientation);
+
+  //added by Mike, 20220910; edited by Mike, 20220911
+  var myBody = document.getElementById("myBodyId");
+
+  //reference: https://stackoverflow.com/questions/4917664/detect-viewport-orientation-if-orientation-is-portrait-display-alert-message-ad; last accessed: 20220910
+  //answer by: crmpicco, 20130515T1414;
+  //edited by: posit labs, 20150929T1708
+  //if ((window.orientation==0) ||
+
+////  if ((screen.orientation==0) ||
+////    (window.matchMedia("(orientation: portrait)").matches)) {
+
+  if (screen.orientation==0) {
+    //alert("detected: PORTRAIT mode");
+     myBody.className='bodyPortraitMode';
+  }
+  else {//if (window.matchMedia("(orientation: landscape)").matches) {
+     //alert("detected: LANDSCAPE mode");
+     myBody.className='bodyLandscapeMode';
+  }
+
+  //tempAlert("close",1000);　//1sec
+  //edited by Mike, 20220914
+  //tempAlert("",1000);　//1sec
+  tempAlert("",200);　//1/5sec
+
+  //TO-DO: -add: auto-update: object positions after CHANGE in orientation
+}, false);
+*/
+
+
+
+// ---------------------
+
+
+
+
+		//removed by Mike, 20231105; from 20231104
+		//removeFromPuzzleStageExcessTiles();
+
+		init();
+
+		//added by Mike, 20231104
+		//after init();
+		initPuzzle();
+
+		iFacingDirection=iFACING_DOWN;
+
+		//added by Mike, 20230423
+		initMouseInput();
+
+		//added by Mike, 20231125
+		initKeyboardInput();
+
+		//added by Mike, 202301107
+		initTouchInput();
+
+		fFramesPerSecond=16.66; //100.00; //16.66;
+		clearInterval(iCurrentIntervalId);
+		iCurrentIntervalId=setInterval(myUpdateFunction, fFramesPerSecond);
+	}
+
+
+
+
+  </script>
+
+  <body id="myBodyId" onload="onLoad();">
+
+	<canvas id="myCanvasId" class="myCanvas">
+	</canvas>
+
+				
+  <canvas id="myCanvasTwoId" class="myCanvas">
+	</canvas>
+			
+<!-- note: using absolute positions; table technique NO EFFECT
+	<table>
+	<tr>
+		<td>
+		</td>
+		<td>
+		</td>
+	</tr>
+	</table>
+-->
+
+		<!--HALLO!-->
+<!--
+		<img id="mainImageTileImageId" class="Image32x32TileFrame1" src="assets/images/human.png">
+-->
+<!-- edited by Mike, 20230424
+		<img id="mainImageTileImageId" class="ImageTileFrame1" src="assets/images/inputImage.png">
+-->
+
+<!-- noted by Mike, 20230424;
+
+reference: https://stackoverflow.com/questions/5713295/specify-a-root-path-of-your-html-directory-for-script-links/41011179#41011179; last accessed: 20230424;
+answer by: MistyDawn, 20161207T0655;
+edited by: Huy Nguyen, 20170124T0455
+
+/ means the root of the current drive;
+./ means the current directory;
+/ means the parent of the current directory.
+
+//noted by Mike, 20231105
+incorrect output on Safari; macOS;
+
+opting to put assets folder in "html_application" folder instead
+-->
+		<img id="mainImageTileImageTankBodyId" class="ImageTileFrame1" src="assets/images/inputImage.png">
+
+		<img id="mainImageTileImageId" class="ImageTileFrame1" src="assets/images/inputImage.png">
+
+		<img id="mainImageTileProjectileImageId" class="ImageTileFrame1" src="assets/images/inputImage.png">
+
+		<!-- added by Mike, 20231121 -->
+		<img id="mouseInputImageId" class="ImageMouseInput" src="assets/images/inputImage.png">
+
+    <!-- added by Mike, 20231125 -->
+    <img id="mainImageMonsterBoss" class="ImageMonsterBoss" src="assets/images/inputImage.png">
+    <img id="mainImageMonster0" class="ImageMonster0" src="assets/images/inputImage.png">
+
+	<!-- added by Mike, 20231129 -->
+	<img id="mainImageSoldierId" class="ImageMainSoldier" src="assets/images/puzzleStageBG.png">
+
+
+<!--
+		<img id="explosionEffectImageId" class="ImageExplosion" src="assets/images/effects.png">
+-->
+
+		<!-- added by Mike, 20231104;
+		  note: .html; not .php -->
+
+<!-- set 1 -->
+<img id="puzzleTileImageIdBg0" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg1" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg2" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg3" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg4" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+
+<!-- set 2 -->
+<img id="puzzleTileImageIdBg5" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg6" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg7" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg8" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<!-- set 3 -->
+<img id="puzzleTileImageIdBg9" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg10" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg11" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg12" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<!-- set 4 -->
+<img id="puzzleTileImageIdBg13" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg14" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg15" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+<img id="puzzleTileImageIdBg16" class="Image32x32Tile" onerror="" src="assets/images/tile.png" alt="" title="">
+
+
+
+	<img id="explosionEffectImageId" class="ImageExplosion" src="assets/images/effects.png">
+  <img id="explosionEffectToMonsterImageId" class="ImageExplosion" src="assets/images/effects.png">
+
+    <img id="explosionEffectToCityImageId" class="ImageExplosionToCity" src="assets/images/effects.png">
+
+
+	<!-- added by Mike, 20221119 -->
+	<div id="divPuzzleTileImageTargetBorderId" class="Image32x32TileTargetBorder"></div>
+
+	<!-- added by Mike, 20221121 -->
+	<div id="divPuzzleTileImageSpaceBorderId" class="Image32x32TileSpaceBorder"></div>
+
+
+<!-- removed by Mike, 20231127
+	<canvas id="myCanvasSnowEffectId" class="myCanvasSnowEffect">
+	</canvas>
+ -->
+ 
+	<div id="divSnowEffectId0" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId1" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId2" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId3" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId4" class="myDivSnowEffect"></div>
+
+	<div id="divSnowEffectId5" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId6" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId7" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId8" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId9" class="myDivSnowEffect"></div>
+
+	<!--
+	<div id="divSnowEffectId10" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId11" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId12" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId13" class="myDivSnowEffect"></div>
+	<div id="divSnowEffectId14" class="myDivSnowEffect"></div>
+-->
+
+	<div id="divTransitionEffectId" class="myDivTransitionEffect"></div>
+
+		
+	<img id="howToPlayGuideImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2023HowToPlay.png">
+		
+	<img id="howToPlayGuideImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2023HowToPlayFrame2.png">
+	
+	
+	<img id="titleImageId" class="ImageTitle" src="assets/images/gameOff2023Title.png">
+
+	<img id="bossBattleBgImageId" class="ImageBossBattleBg" src="assets/images/bossBattleBg.png">
+	
+	<img id="bossBattleBgImagePart2Id" class="ImageBossBattleBgPart2" src="assets/images/bossBattleBgPart2.png">	
+
+	
+	<div id="textStatusDivId" class="DivTextStatus">CONGRATULATIONS!</div>
+	<div id="textStatusBackgroundDivId" class="DivTextStatusBackground"></div>
+
+	
+	<!-- PRESS ENTER; PRESS START -->
+	<div id="textEnterDivId" class="DivTextClickStart">START</div>
+
+
+	<div id="textScoreShadowDivId" class="DivStepCountStatusShadow">0</div>
+
+	<div id="textScoreDivId" class="DivTextScore">0</div>
+
+
+<!--
+	<div id="stepCountStatusDivId" class="DivStepCountStatus">0</div>
+-->
+
+  <audio id="myAudioId" class="myAudio" src="assets/audio/usbongGameOff2023BGM.mp3" type="audio/x-m4a" controls loop>
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
+<!--
+	<audio id="myAudioId" class="myAudio" src="assets/audio/usbongGameOff2023BGM.mp3" type="audio/x-m4a">
+	  Your browser does not support the audio tag.
+	</audio><br/>	
+-->	
+	
+
+	<audio id="myAudioEffectId" class="myAudio" src="assets/audio/usbongGameOff2023TapLoudEdited.mp3" type="audio/x-m4a">
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
+	<audio id="myAudioEffectCannonFireId" class="myAudio" src="assets/audio/usbongGameOff2023AudioEffectsCannon.mp3" type="audio/x-m4a">
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
+
+  </body>
+</html>

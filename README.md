@@ -6,7 +6,16 @@ https://youtu.be/XhMtqGT1IwY?si=PGs9Yn6nE5kyOWQC
 
 > UsbongChineseZhuanYe 20231225185508 
 
+### Marketing Action Plan
 
+1) Learn PhilNITS (http://philnits.org/)<br/>
+<b>Goal:</b> Fundamental Engineer Certified
+
+2) Work in I.T. Industry<br/>
+<b>Goal:</b> Gain TIME and MONEY via system efficiency
+
+3) Create games played during childhood (over 20 years ago)<br/>
+<b>Goal:</b> Consumer to Producer
 
 ## Open Source Software License
 Copyright 2022~2023 SYSON, MICHAEL B.
